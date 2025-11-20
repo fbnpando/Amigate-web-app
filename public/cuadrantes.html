@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Cuadrantes - Santa Cruz</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 0;
+            min-height: 600px;
+        }
+
+        #map {
+            width: 100%;
+            height: 600px;
+            border-right: 3px solid #e0e0e0;
+        }
+
+        .sidebar {
+            padding: 30px;
+            background: #f8f9fa;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .control-group input,
+        .control-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .control-group input:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(56, 239, 125, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .stats {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .stats h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .log {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.85em;
+            font-family: monospace;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ Generador de Cuadrantes</h1>
+            <p>Santa Cruz de la Sierra - Sistema Automático</p>
+        </div>
+
+        <div class="content">
+            <div id="map"></div>
+
+            <div class="sidebar">
+                <div class="control-group">
+                    <label>📏 Tamaño de Cuadrante (km)</label>
+                    <input type="number" id="gridSize" value="2" min="0.5" max="10" step="0.5">
+                </div>
+
+                <div class="control-group">
+                    <label>🏙️ Ciudad</label>
+                    <input type="text" id="ciudad" value="Santa Cruz de la Sierra" readonly>
+                </div>
+
+                <div class="control-group">
+                    <label>🌐 API Endpoint</label>
+                    <input type="text" id="apiEndpoint" value="http://localhost:8000/api">
+                </div>
+
+                <button class="btn btn-primary" onclick="generarCuadrantes()">
+                    🎯 Generar Cuadrantes
+                </button>
+
+                <button class="btn btn-success" id="guardarBtn" onclick="guardarEnBaseDatos()" disabled>
+                    💾 Guardar en Base de Datos
+                </button>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Procesando...</p>
+                </div>
+
+                <div id="alertContainer"></div>
+
+                <div class="stats">
+                    <h3>📊 Estadísticas</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Cuadrantes:</span>
+                        <span class="stat-value" id="statCuadrantes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Barrios:</span>
+                        <span class="stat-value" id="statBarrios">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Grupos:</span>
+                        <span class="stat-value" id="statGrupos">0</span>
+                    </div>
+                </div>
+
+                <div class="log" id="log"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let cuadrantesGenerados = [];
+        let rectangles = [];
+
+        // Límites de Santa Cruz de la Sierra
+        const santaCruzBounds = {
+            norte: -17.7000,
+            sur: -17.8500,
+            este: -63.1000,
+            oeste: -63.2500
+        };
+
+        // Inicializar mapa
+        function initMap() {
+            map = L.map('map').setView([-17.7833, -63.1821], 12);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Dibujar límites de Santa Cruz
+            const bounds = [[santaCruzBounds.norte, santaCruzBounds.oeste], 
+                          [santaCruzBounds.sur, santaCruzBounds.este]];
+            L.rectangle(bounds, {
+                color: '#667eea',
+                weight: 3,
+                fillOpacity: 0.1
+            }).addTo(map);
+
+            addLog('✅ Mapa inicializado correctamente');
+        }
+
+        // Generar cuadrantes
+        function generarCuadrantes() {
+            const gridSize = parseFloat(document.getElementById('gridSize').value);
+            
+            // Limpiar cuadrantes anteriores
+            rectangles.forEach(rect => map.removeLayer(rect));
+            rectangles = [];
+            cuadrantesGenerados = [];
+
+            const latDiff = 0.009 * gridSize; // Aproximadamente 1 km
+            const lngDiff = 0.011 * gridSize;
+
+            let filaIndex = 0;
+            let columnaIndex = 0;
+            let totalBarrios = 0;
+
+            addLog('🔄 Generando cuadrantes...');
+
+            for (let lat = santaCruzBounds.norte; lat > santaCruzBounds.sur; lat -= latDiff) {
+                columnaIndex = 0;
+                const fila = String.fromCharCode(65 + filaIndex); // A, B, C...
+
+                for (let lng = santaCruzBounds.oeste; lng < santaCruzBounds.este; lng += lngDiff) {
+                    const latMin = lat - latDiff;
+                    const latMax = lat;
+                    const lngMin = lng;
+                    const lngMax = lng + lngDiff;
+                    const centroLat = (latMin + latMax) / 2;
+                    const centroLng = (lngMin + lngMax) / 2;
+
+                    const codigo = `${fila}${columnaIndex + 1}`;
+                    const nombre = `Cuadrante ${codigo}`;
+
+                    // Generar barrios aleatorios para este cuadrante (2-5 barrios)
+                    const numBarrios = Math.floor(Math.random() * 4) + 2;
+                    const barriosAleatorios = [];
+                    const nombresBarrios = [
+                        'Centro', 'Norte', 'Sur', 'Este', 'Oeste', 'Villa', 'Urbanización',
+                        'Plan 3000', 'Equipetrol', 'Las Palmas', 'Urbarí', 'Hamacas',
+                        'Cristo Redentor', 'Palmasola', 'Satélite Norte', 'Los Pozos'
+                    ];
+
+                    for (let i = 0; i < numBarrios; i++) {
+                        const nombreBarrio = nombresBarrios[Math.floor(Math.random() * nombresBarrios.length)] + ' ' + codigo;
+                        barriosAleatorios.push(nombreBarrio);
+                    }
+
+                    totalBarrios += numBarrios;
+
+                    const cuadrante = {
+                        codigo: codigo,
+                        fila: fila,
+                        columna: columnaIndex + 1,
+                        nombre: nombre,
+                        lat_min: latMin,
+                        lat_max: latMax,
+                        lng_min: lngMin,
+                        lng_max: lngMax,
+                        centro_lat: centroLat,
+                        centro_lng: centroLng,
+                        ciudad: 'Santa Cruz de la Sierra',
+                        zona: determinarZona(centroLat, centroLng),
+                        activo: true,
+                        barrios: barriosAleatorios
+                    };
+
+                    cuadrantesGenerados.push(cuadrante);
+
+                    // Dibujar rectángulo en el mapa
+                    const bounds = [[latMin, lngMin], [latMax, lngMax]];
+                    const rect = L.rectangle(bounds, {
+                        color: getColorPorZona(cuadrante.zona),
+                        weight: 2,
+                        fillOpacity: 0.2
+                    }).addTo(map);
+
+                    rect.bindPopup(`
+                        <b>${nombre}</b><br>
+                        Código: ${codigo}<br>
+                        Zona: ${cuadrante.zona}<br>
+                        Barrios: ${numBarrios}
+                    `);
+
+                    rectangles.push(rect);
+                    columnaIndex++;
+                }
+                filaIndex++;
+            }
+
+            // Actualizar estadísticas
+            document.getElementById('statCuadrantes').textContent = cuadrantesGenerados.length;
+            document.getElementById('statBarrios').textContent = totalBarrios;
+            document.getElementById('statGrupos').textContent = cuadrantesGenerados.length;
+            document.getElementById('guardarBtn').disabled = false;
+
+            addLog(`✅ ${cuadrantesGenerados.length} cuadrantes generados`);
+            addLog(`✅ ${totalBarrios} barrios generados`);
+            showAlert('success', `Se generaron ${cuadrantesGenerados.length} cuadrantes y ${totalBarrios} barrios`);
+        }
+
+        // Determinar zona según coordenadas
+        function determinarZona(lat, lng) {
+            const centroLat = -17.7833;
+            const centroLng = -63.1821;
+
+            if (lat > centroLat && lng < centroLng) return 'Norte';
+            if (lat > centroLat && lng > centroLng) return 'Noreste';
+            if (lat < centroLat && lng > centroLng) return 'Este';
+            if (lat < centroLat && lng < centroLng) return 'Sur';
+            return 'Centro';
+        }
+
+        // Color por zona
+        function getColorPorZona(zona) {
+            const colores = {
+                'Norte': '#FF6B6B',
+                'Noreste': '#4ECDC4',
+                'Este': '#45B7D1',
+                'Sur': '#96CEB4',
+                'Centro': '#FFEAA7'
+            };
+            return colores[zona] || '#95A5A6';
+        }
+
+        // Guardar en base de datos
+        async function guardarEnBaseDatos() {
+            const apiEndpoint = document.getElementById('apiEndpoint').value;
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('guardarBtn').disabled = true;
+
+            let cuadrantesCreados = 0;
+            let barriosCreados = 0;
+            let gruposCreados = 0;
+
+            addLog('🔄 Iniciando guardado en base de datos...');
+
+            for (const cuadrante of cuadrantesGenerados) {
+                try {
+                    // 1. Crear cuadrante
+                    const resCuadrante = await fetch(`${apiEndpoint}/cuadrantes`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            codigo: cuadrante.codigo,
+                            fila: cuadrante.fila,
+                            columna: cuadrante.columna,
+                            nombre: cuadrante.nombre,
+                            lat_min: cuadrante.lat_min,
+                            lat_max: cuadrante.lat_max,
+                            lng_min: cuadrante.lng_min,
+                            lng_max: cuadrante.lng_max,
+                            centro_lat: cuadrante.centro_lat,
+                            centro_lng: cuadrante.centro_lng,
+                            ciudad: cuadrante.ciudad,
+                            zona: cuadrante.zona,
+                            activo: cuadrante.activo
+                        })
+                    });
+
+                    if (!resCuadrante.ok) {
+                        const error = await resCuadrante.json();
+                        throw new Error(JSON.stringify(error));
+                    }
+
+                    const cuadranteData = await resCuadrante.json();
+                    cuadrantesCreados++;
+                    addLog(`✅ Cuadrante ${cuadrante.codigo} creado`);
+
+                    // 2. Crear barrios
+                    for (const barrio of cuadrante.barrios) {
+                        const resBarrio = await fetch(`${apiEndpoint}/cuadrantes/${cuadranteData.id}/barrios`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                nombre_barrio: barrio
+                            })
+                        });
+
+                        if (resBarrio.ok) {
+                            barriosCreados++;
+                        }
+                    }
+
+                    // 3. Crear grupo para el cuadrante
+                    const resGrupo = await fetch(`${apiEndpoint}/grupos`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            cuadrante_id: cuadranteData.id,
+                            nombre: `Grupo ${cuadrante.nombre}`,
+                            descripcion: `Grupo comunitario del ${cuadrante.nombre} - Zona ${cuadrante.zona}`,
+                            publico: true,
+                            requiere_aprobacion: false
+                        })
+                    });
+
+                    if (resGrupo.ok) {
+                        gruposCreados++;
+                        addLog(`✅ Grupo para ${cuadrante.codigo} creado`);
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    addLog(`❌ Error en ${cuadrante.codigo}: ${error.message}`);
+                }
+            }
+
+            document.getElementById('loading').classList.remove('active');
+            document.getElementById('statCuadrantes').textContent = cuadrantesCreados;
+            document.getElementById('statBarrios').textContent = barriosCreados;
+            document.getElementById('statGrupos').textContent = gruposCreados;
+
+            showAlert('success', `✅ Guardado completado: ${cuadrantesCreados} cuadrantes, ${barriosCreados} barrios, ${gruposCreados} grupos`);
+            addLog('✅ Proceso completado exitosamente');
+        }
+
+        // Mostrar alerta
+        function showAlert(type, message) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Agregar entrada al log
+        function addLog(message) {
+            const log = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            log.insertBefore(entry, log.firstChild);
+        }
+
+        // Inicializar al cargar
+        window.onload = initMap;
+    </script>
+</body>
+</html>
