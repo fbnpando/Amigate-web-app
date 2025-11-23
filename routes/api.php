@@ -19,6 +19,7 @@ use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\ConfiguracionNotificacionesUsuarioController;
 use App\Http\Controllers\ConfiguracionSistemaController;
 use App\Http\Controllers\GrupoMiembroController;
+use App\Http\Controllers\NotificacionDatoController;
 
 Route::post('login', [UsuarioController::class, 'login']);
 Route::post('register', [UsuarioController::class, 'register']);
@@ -93,6 +94,9 @@ Route::post('notificaciones', [NotificacionController::class, 'store']);
 Route::post('notificaciones/{id}/leer', [NotificacionController::class, 'marcarLeida']);
 Route::post('usuarios/{usuario}/notificaciones/leer-todas', [NotificacionController::class, 'marcarTodasLeidas']);
 Route::delete('notificaciones/{id}', [NotificacionController::class, 'destroy']);
+
+Route::apiResource('notificacion-datos', NotificacionDatoController::class);
+Route::get('notificaciones/{notificacionId}/datos', [NotificacionDatoController::class, 'getByNotificacion']);
 
 Route::get('configuracion', [ConfiguracionSistemaController::class, 'index']);
 Route::get('configuracion/{clave}', [ConfiguracionSistemaController::class, 'show']);
