@@ -33,9 +33,16 @@ class CuadranteWebController extends Controller
             'lng_max' => 'required|numeric',
             'ciudad' => 'required|string|max:100',
             'zona' => 'nullable|string|max:100',
+            'activo' => 'nullable|boolean',
+            'barrios' => 'nullable|array'
         ]);
 
-        Cuadrante::create($validated);
+        $cuadrante = Cuadrante::create($validated);
+
+        // Si es una petición AJAX, devolver JSON
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json($cuadrante, 201);
+        }
 
         return redirect()->route('cuadrantes.index')
             ->with('success', 'Cuadrante creado exitosamente');

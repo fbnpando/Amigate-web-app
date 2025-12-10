@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Usuario extends Model
 {
@@ -70,6 +71,26 @@ class Usuario extends Model
     {
         return $this->belongsToMany(Grupo::class, 'grupo_miembros', 'usuario_id', 'grupo_id')
             ->withPivot('rol', 'notificaciones_activas', 'joined_at');
+    }
+
+    // ==========================================
+    // EVENTOS DEL MODELO
+    // ==========================================
+
+    /**
+     * Boot del modelo - Configura eventos
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Antes de eliminar un usuario, eliminar registros relacionados
+        static::deleting(function ($usuario) {
+            // Eliminar configuración de notificaciones del usuario
+            DB::table('configuracion_notificaciones_usuario')
+                ->where('usuario_id', $usuario->id)
+                ->delete();
+        });
     }
 
     // ==========================================

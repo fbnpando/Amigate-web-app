@@ -139,8 +139,25 @@
     @if($grupos->hasPages())
     <div class="row mt-4">
         <div class="col-12">
-            <div class="d-flex justify-content-center">
-                {{ $grupos->links() }}
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                {{-- Botón Anterior --}}
+                @if($grupos->onFirstPage())
+                    <span class="btn btn-outline-secondary disabled">Anterior</span>
+                @else
+                    <a href="{{ $grupos->previousPageUrl() }}" class="btn btn-outline-primary">Anterior</a>
+                @endif
+                
+                {{-- Información de páginas --}}
+                <span class="text-muted">
+                    Página {{ $grupos->currentPage() }} de {{ $grupos->lastPage() }}
+                </span>
+                
+                {{-- Botón Siguiente --}}
+                @if($grupos->hasMorePages())
+                    <a href="{{ $grupos->nextPageUrl() }}" class="btn btn-outline-primary">Siguiente</a>
+                @else
+                    <span class="btn btn-outline-secondary disabled">Siguiente</span>
+                @endif
             </div>
         </div>
     </div>
@@ -186,11 +203,46 @@
     transform: scale(1.05);
 }
 
+/* Estilos para la paginación personalizada */
+.pagination-custom {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination-custom .btn {
+    min-width: 100px;
+    font-weight: 500;
+}
+
+.pagination-custom .btn:disabled,
+.pagination-custom .btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .col-md-6 {
         padding-left: 10px;
         padding-right: 10px;
+    }
+    
+    .pagination .page-link {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .pagination .page-link i,
+    .pagination .page-link svg {
+        font-size: 0.75rem;
+        width: 0.75rem;
+        height: 0.75rem;
+    }
+    
+    .pagination .page-item .page-link {
+        min-width: 32px;
+        height: 32px;
     }
 }
 </style>

@@ -19,40 +19,43 @@ class Reporte extends Model
         'tipo_reporte',
         'titulo',
         'descripcion',
-        'ubicacion_exacta',
+        'ubicacion_exacta_lat',      // ← Cambio: eran columnas separadas
+        'ubicacion_exacta_lng',      // ← Cambio: no un array
         'direccion_referencia',
-        'caracteristicas',
+        // 'caracteristicas',        // ← NO existe en la tabla principal
         'fecha_perdida',
         'fecha_reporte',
         'estado',
         'prioridad',
-        'cuadrantes_expandidos',
+        // 'cuadrantes_expandidos',  // ← NO existe en la tabla
         'nivel_expansion',
         'max_expansion',
         'proxima_expansion',
-        'imagenes',
-        'videos',
+        // 'imagenes',               // ← Tabla separada: reporte_imagenes
+        // 'videos',                 // ← Tabla separada: reporte_videos
         'contacto_publico',
         'telefono_contacto',
         'email_contacto',
         'recompensa',
         'vistas',
-        'respuestas_count',
+        // 'respuestas_count',       // ← ELIMINADO: no existe
     ];
 
     protected $casts = [
-        'ubicacion_exacta' => 'array',
-        'caracteristicas' => 'array',
+        'ubicacion_exacta_lat' => 'decimal:8',
+        'ubicacion_exacta_lng' => 'decimal:8',
+        // 'ubicacion_exacta' => 'array',     // ← ELIMINAR
+        // 'caracteristicas' => 'array',      // ← ELIMINAR
         'fecha_perdida' => 'datetime',
         'fecha_reporte' => 'datetime',
         'proxima_expansion' => 'datetime',
-        'imagenes' => 'array',
-        'videos' => 'array',
-        'cuadrantes_expandidos' => 'array',
+        // 'imagenes' => 'array',             // ← ELIMINAR
+        // 'videos' => 'array',               // ← ELIMINAR
+        // 'cuadrantes_expandidos' => 'array', // ← ELIMINAR
         'contacto_publico' => 'boolean',
         'recompensa' => 'decimal:2',
         'vistas' => 'integer',
-        'respuestas_count' => 'integer',
+        // 'respuestas_count' => 'integer',   // ← ELIMINAR
         'nivel_expansion' => 'integer',
         'max_expansion' => 'integer',
         'created_at' => 'datetime',
@@ -66,127 +69,101 @@ class Reporte extends Model
         'max_expansion' => 3,
         'contacto_publico' => true,
         'vistas' => 0,
-        'respuestas_count' => 0,
-        'imagenes' => '[]',
-        'videos' => '[]',
-        'cuadrantes_expandidos' => '[]',
+        // 'respuestas_count' => 0,  // ← ELIMINAR
+        // 'imagenes' => '[]',       // ← ELIMINAR
+        // 'videos' => '[]',         // ← ELIMINAR
+        // 'cuadrantes_expandidos' => '[]', // ← ELIMINAR
     ];
 
     // ==========================================
     // RELACIONES
     // ==========================================
 
-    /**
-     * Usuario que creó el reporte
-     */
     public function usuario()
     {
         return $this->belongsTo(Usuario::class);
     }
 
-    /**
-     * Categoría del reporte
-     */
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);
     }
 
-    /**
-     * Cuadrante donde se reportó
-     */
     public function cuadrante()
     {
         return $this->belongsTo(Cuadrante::class);
     }
 
-    /**
-     * Respuestas al reporte
-     */
     public function respuestas()
     {
         return $this->hasMany(Respuesta::class);
     }
 
-    /**
-     * Expansiones del reporte
-     */
     public function expansiones()
     {
-        return $this->hasMany(ExpansionReporte::class);
+        return $this->hasMany(ExpansionReporte::class, 'reporte_id');
+    }
+
+    // Nuevas relaciones según tu estructura de BD
+    public function imagenes()
+    {
+        return $this->hasMany(ReporteImagen::class, 'reporte_id');
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(ReporteVideo::class, 'reporte_id');
+    }
+
+    public function caracteristicas()
+    {
+        return $this->hasMany(ReporteCaracteristica::class, 'reporte_id');
     }
 
     // ==========================================
     // SCOPES
     // ==========================================
 
-    /**
-     * Reportes activos
-     */
     public function scopeActivos($query)
     {
         return $query->where('estado', 'activo');
     }
 
-    /**
-     * Reportes resueltos
-     */
     public function scopeResueltos($query)
     {
         return $query->where('estado', 'resuelto');
     }
 
-    /**
-     * Reportes perdidos
-     */
     public function scopePerdidos($query)
     {
         return $query->where('tipo_reporte', 'perdido');
     }
 
-    /**
-     * Reportes encontrados
-     */
     public function scopeEncontrados($query)
     {
         return $query->where('tipo_reporte', 'encontrado');
     }
 
-    /**
-     * Reportes por categoría
-     */
     public function scopePorCategoria($query, $categoriaId)
     {
         return $query->where('categoria_id', $categoriaId);
     }
 
-    /**
-     * Reportes por cuadrante
-     */
     public function scopePorCuadrante($query, $cuadranteId)
     {
         return $query->where('cuadrante_id', $cuadranteId);
     }
 
-    /**
-     * Reportes con prioridad urgente
-     */
     public function scopeUrgentes($query)
     {
         return $query->where('prioridad', 'urgente');
     }
 
-    /**
-     * Reportes con recompensa
-     */
     public function scopeConRecompensa($query)
     {
         return $query->whereNotNull('recompensa')->where('recompensa', '>', 0);
     }
 
-    /**
-     * Reportes recientes (últimos 7 días)
-     */
     public function scopeRecientes($query)
     {
         return $query->where('created_at', '>=', now()->subDays(7));
@@ -196,124 +173,83 @@ class Reporte extends Model
     // MÉTODOS AUXILIARES
     // ==========================================
 
-    /**
-     * Verifica si el reporte está activo
-     */
     public function estaActivo()
     {
         return $this->estado === 'activo';
     }
 
-    /**
-     * Verifica si el reporte está resuelto
-     */
     public function estaResuelto()
     {
         return $this->estado === 'resuelto';
     }
 
-    /**
-     * Verifica si es un reporte de objeto perdido
-     */
     public function esPerdido()
     {
         return $this->tipo_reporte === 'perdido';
     }
 
-    /**
-     * Verifica si es un reporte de objeto encontrado
-     */
     public function esEncontrado()
     {
         return $this->tipo_reporte === 'encontrado';
     }
 
-    /**
-     * Verifica si tiene recompensa
-     */
     public function tieneRecompensa()
     {
         return $this->recompensa && $this->recompensa > 0;
     }
 
-    /**
-     * Verifica si tiene imágenes
-     */
     public function tieneImagenes()
     {
-        return is_array($this->imagenes) && count($this->imagenes) > 0;
+        return $this->imagenes()->exists();
     }
 
-    /**
-     * Verifica si tiene videos
-     */
     public function tieneVideos()
     {
-        return is_array($this->videos) && count($this->videos) > 0;
+        return $this->videos()->exists();
     }
 
-    /**
-     * Obtiene la cantidad de imágenes
-     */
     public function cantidadImagenes()
     {
-        return $this->tieneImagenes() ? count($this->imagenes) : 0;
+        return $this->imagenes()->count();
     }
 
-    /**
-     * Obtiene la cantidad de videos
-     */
     public function cantidadVideos()
     {
-        return $this->tieneVideos() ? count($this->videos) : 0;
+        return $this->videos()->count();
     }
 
-    /**
-     * Obtiene la primera imagen o un placeholder
-     */
     public function getPrimeraImagenAttribute()
     {
-        if ($this->tieneImagenes()) {
-            return asset('storage/' . $this->imagenes[0]);
+        $primeraImagen = $this->imagenes()->first();
+        if ($primeraImagen) {
+            return asset('storage/' . $primeraImagen->ruta);
         }
         return asset('images/placeholder-reporte.png');
     }
 
-    /**
-     * Marca el reporte como resuelto
-     */
     public function marcarComoResuelto()
     {
         return $this->update(['estado' => 'resuelto']);
     }
 
-    /**
-     * Incrementa el contador de vistas
-     */
     public function incrementarVistas()
     {
         return $this->increment('vistas');
     }
 
     /**
-     * Incrementa el contador de respuestas
+     * Obtiene el contador de respuestas dinámicamente
      */
-    public function incrementarRespuestas()
+    public function getRespuestasCountAttribute()
     {
-        return $this->increment('respuestas_count');
+        return $this->respuestas()->count();
     }
 
-    /**
-     * Verifica si puede expandirse a más cuadrantes
-     */
     public function puedeExpandirse()
     {
         return $this->nivel_expansion < $this->max_expansion;
     }
 
-    /**
-     * Verifica si es momento de expandirse
-     */
     public function debeExpandirse()
     {
         return $this->puedeExpandirse() 
@@ -321,9 +257,6 @@ class Reporte extends Model
             && now()->greaterThanOrEqualTo($this->proxima_expansion);
     }
 
-    /**
-     * Obtiene el badge de estado con color
-     */
     public function getBadgeEstadoAttribute()
     {
         $badges = [
@@ -336,9 +269,6 @@ class Reporte extends Model
         return $badges[$this->estado] ?? '<span class="badge bg-secondary">Desconocido</span>';
     }
 
-    /**
-     * Obtiene el badge de prioridad con color
-     */
     public function getBadgePrioridadAttribute()
     {
         $badges = [
@@ -351,9 +281,6 @@ class Reporte extends Model
         return $badges[$this->prioridad] ?? '<span class="badge bg-secondary">Normal</span>';
     }
 
-    /**
-     * Obtiene el badge de tipo de reporte
-     */
     public function getBadgeTipoAttribute()
     {
         $badges = [
@@ -364,9 +291,6 @@ class Reporte extends Model
         return $badges[$this->tipo_reporte] ?? '<span class="badge bg-secondary">Desconocido</span>';
     }
 
-    /**
-     * Formato de dirección de referencia corta
-     */
     public function getDireccionCortaAttribute()
     {
         if (!$this->direccion_referencia) {
@@ -375,11 +299,22 @@ class Reporte extends Model
         return \Str::limit($this->direccion_referencia, 50);
     }
 
-    /**
-     * Obtiene los días desde que se reportó
-     */
     public function getDiasDesdeReporteAttribute()
     {
         return $this->created_at->diffInDays(now());
+    }
+
+    /**
+     * Accessor para obtener ubicación como array
+     */
+    public function getUbicacionExactaAttribute()
+    {
+        if ($this->ubicacion_exacta_lat && $this->ubicacion_exacta_lng) {
+            return [
+                'lat' => (float) $this->ubicacion_exacta_lat,
+                'lng' => (float) $this->ubicacion_exacta_lng,
+            ];
+        }
+        return null;
     }
 }
