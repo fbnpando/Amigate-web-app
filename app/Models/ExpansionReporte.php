@@ -12,12 +12,13 @@ class ExpansionReporte extends Model
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
-    const UPDATED_AT = null;
+    public $timestamps = false;
 
     protected $fillable = [
         'reporte_id',
         'cuadrante_expandido_id',
-        'nivel'
+        'nivel',
+        'fecha_expansion'
     ];
 
     protected $casts = [

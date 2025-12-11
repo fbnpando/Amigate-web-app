@@ -507,7 +507,7 @@
 
                     // 2. Crear barrios
                     for (const barrio of cuadrante.barrios) {
-                        const resBarrio = await fetch(`${apiEndpoint}/cuadrantes/${cuadranteData.id}/barrios`, {
+                        const resBarrio = await fetch(`${apiEndpoint}/cuadrantes/${cuadranteData.data.id}/barrios`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -521,6 +521,10 @@
                         if (resBarrio.ok) {
                             barriosCreados++;
                         }
+                        else {
+                            const errorBarrio = await resBarrio.json();
+                            console.error('Error creando barrio:', errorBarrio);
+                        }
                     }
 
                     // 3. Crear grupo para el cuadrante
@@ -531,7 +535,7 @@
                             'Accept': 'application/json'
                         },
                         body: JSON.stringify({
-                            cuadrante_id: cuadranteData.id,
+                            cuadrante_id: cuadranteData.data.id,
                             nombre: `Grupo ${cuadrante.nombre}`,
                             descripcion: `Grupo comunitario del ${cuadrante.nombre} - Zona ${cuadrante.zona}`,
                             publico: true,

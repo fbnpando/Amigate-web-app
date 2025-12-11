@@ -2,70 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CategoriaController extends Controller
 {
+    /**
+     * Obtener todas las categorías activas
+     */
     public function index()
     {
-        $categorias = Categoria::where('activo', true)->get();
-        
-        return response()->json($categorias);
-    }
+        try {
+            $categorias = Categoria::where('activo', true)
+                ->orderBy('nombre')
+                ->get();
 
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:100|unique:categorias,nombre',
-            'icono' => 'nullable|string|max:50',
-            'color' => 'nullable|string|max:7',
-            'descripcion' => 'nullable|string'
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $categorias
+            ], 200);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener categorías',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $categoria = Categoria::create($request->all());
-        
-        return response()->json($categoria, 201);
     }
 
+    /**
+     * Obtener una categoría específica
+     */
     public function show($id)
     {
-        $categoria = Categoria::with('reportes')->findOrFail($id);
-        
-        return response()->json($categoria);
-    }
+        try {
+            $categoria = Categoria::findOrFail($id);
 
-    public function update(Request $request, $id)
-    {
-        $categoria = Categoria::findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'data' => $categoria
+            ], 200);
 
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'sometimes|string|max:100|unique:categorias,nombre,' . $id,
-            'icono' => 'nullable|string|max:50',
-            'color' => 'nullable|string|max:7',
-            'descripcion' => 'nullable|string',
-            'activo' => 'nullable|boolean'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Categoría no encontrada',
+                'error' => $e->getMessage()
+            ], 404);
         }
-
-        $categoria->update($request->all());
-        
-        return response()->json($categoria);
-    }
-
-    public function destroy($id)
-    {
-        $categoria = Categoria::findOrFail($id);
-        $categoria->delete();
-        
-        return response()->json(['message' => 'Categoría eliminada correctamente'], 200);
     }
 }

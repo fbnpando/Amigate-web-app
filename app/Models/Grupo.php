@@ -43,6 +43,6 @@ class Grupo extends Model
     {
         return $this->belongsToMany(Usuario::class, 'grupo_miembros', 'grupo_id', 'usuario_id')
             ->withPivot('rol', 'notificaciones_activas', 'joined_at')
-            ->withTimestamps();
+            ->using(GrupoMiembro::class);  // ← Esto le dice que use el modelo pivot
     }
 }

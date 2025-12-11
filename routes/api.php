@@ -1,116 +1,194 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CuadranteController;
-use App\Http\Controllers\CuadranteBarrioController;
-use App\Http\Controllers\ReporteController;
-use App\Http\Controllers\ReporteCaracteristicaController;
-use App\Http\Controllers\ReporteImagenController;
-use App\Http\Controllers\ReporteVideoController;
-use App\Http\Controllers\RespuestaController;
-use App\Http\Controllers\RespuestaImagenController;
-use App\Http\Controllers\RespuestaVideoController;
 use App\Http\Controllers\GrupoController;
-use App\Http\Controllers\ExpansionReporteController;
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\RespuestaController;
 use App\Http\Controllers\NotificacionController;
-use App\Http\Controllers\ConfiguracionNotificacionesUsuarioController;
-use App\Http\Controllers\ConfiguracionSistemaController;
-use App\Http\Controllers\GrupoMiembroController;
-use App\Http\Controllers\NotificacionDatoController;
+use App\Http\Controllers\CategoriaController;
 
-Route::post('login', [UsuarioController::class, 'login']);
-Route::post('register', [UsuarioController::class, 'register']);
+/*
+|--------------------------------------------------------------------------
+| API Routes - Sistema de Reportes de Objetos Perdidos
+|--------------------------------------------------------------------------
+*/
 
-Route::apiResource('usuarios', UsuarioController::class);
-Route::post('usuarios/{id}/ubicacion', [UsuarioController::class, 'actualizarUbicacion']);
-Route::get('usuarios/{id}/reportes', [UsuarioController::class, 'reportes']);
+// ============================================
+// AUTENTICACIÓN
+// ============================================
+Route::prefix('auth')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::get('perfil/{usuarioId}', [AuthController::class, 'perfil']);
+    Route::put('perfil/{usuarioId}', [AuthController::class, 'actualizarPerfil']);
+    Route::put('ubicacion/{usuarioId}', [AuthController::class, 'actualizarUbicacion']);
+    Route::put('notificaciones/{usuarioId}', [AuthController::class, 'actualizarNotificaciones']);
+});
 
-Route::get('usuarios/{usuario}/notificaciones-config', [ConfiguracionNotificacionesUsuarioController::class, 'show']);
-Route::post('usuarios/notificaciones-config', [ConfiguracionNotificacionesUsuarioController::class, 'store']);
-Route::put('usuarios/{usuario}/notificaciones-config', [ConfiguracionNotificacionesUsuarioController::class, 'update']);
+// ============================================
+// CATEGORÍAS
+// ============================================
+Route::prefix('categorias')->group(function () {
+    Route::get('/', [CategoriaController::class, 'index']);
+    Route::get('/{id}', [CategoriaController::class, 'show']);
+});
 
-Route::apiResource('categorias', CategoriaController::class);
-Route::match(['get', 'post'], 'cuadrantes/cercanos', [CuadranteController::class, 'obtenerCercanos']);
-Route::post('cuadrantes/buscar', [CuadranteController::class, 'buscarPorCoordenadas']);
-Route::apiResource('cuadrantes', CuadranteController::class);
+// ============================================
+// CUADRANTES (Para HTML de generación)
+// ============================================
+Route::prefix('cuadrantes')->group(function () {
+    // IMPORTANTE: Rutas específicas PRIMERO, rutas con parámetros DESPUÉS
+    
+    // Detectar cuadrante por ubicación
+    Route::post('detectar', [CuadranteController::class, 'detectarCuadrante']);
+    
+    // Obtener 25 cuadrantes cercanos
+    Route::post('cercanos', [CuadranteController::class, 'cuadrantesCercanos']);
+    
+    // Listar todos los cuadrantes
+    Route::get('/', [CuadranteController::class, 'index']);
+    
+    // Crear cuadrante (desde HTML)
+    Route::post('/', [CuadranteController::class, 'store']);
+    
+    // Agregar barrio a cuadrante
+    Route::post('{cuadranteId}/barrios', [CuadranteController::class, 'agregarBarrio']);
+    
+    // Obtener 8 cuadrantes adyacentes
+    Route::get('{cuadranteId}/adyacentes', [CuadranteController::class, 'cuadrantesAdyacentes']);
+    
+    // Obtener cuadrante específico (SIEMPRE AL FINAL)
+    Route::get('{id}', [CuadranteController::class, 'show']);
+});
 
-Route::get('cuadrantes/{cuadrante}/barrios', [CuadranteBarrioController::class, 'index']);
-Route::post('cuadrantes/{cuadrante}/barrios', [CuadranteBarrioController::class, 'store']);
-Route::put('cuadrantes/{cuadrante}/barrios/{id}', [CuadranteBarrioController::class, 'update']);
-Route::delete('cuadrantes/{cuadrante}/barrios/{id}', [CuadranteBarrioController::class, 'destroy']);
+// ============================================
+// GRUPOS
+// ============================================
+Route::prefix('grupos')->group(function () {
+    // IMPORTANTE: Rutas específicas PRIMERO
+    
+    // Unir usuario a grupo automáticamente
+    Route::post('unir-automatico', [GrupoController::class, 'unirUsuarioAutomatico']);
+    
+    // Verificar y cambiar grupo automáticamente según ubicación
+    Route::post('verificar-cambio-grupo', [GrupoController::class, 'verificarCambioGrupo']);
+    
+    // Obtener grupos por cuadrantes
+    Route::post('por-cuadrantes', [GrupoController::class, 'gruposPorCuadrantes']);
+    
+    // Salir de un grupo
+    Route::post('salir', [GrupoController::class, 'salirDelGrupo']);
+    
+    // Obtener grupos del usuario
+    Route::get('usuario/{usuarioId}', [GrupoController::class, 'gruposDelUsuario']);
+    
+    // Listar todos los grupos
+    Route::get('/', [GrupoController::class, 'index']);
+    
+    // Crear grupo (desde HTML)
+    Route::post('/', [GrupoController::class, 'store']);
+    
+    // Obtener miembros de un grupo
+    Route::get('{grupoId}/miembros', [GrupoController::class, 'miembrosDelGrupo']);
+    
+    // Obtener grupo específico (SIEMPRE AL FINAL)
+    Route::get('{id}', [GrupoController::class, 'show']);
+});
 
-Route::apiResource('reportes', ReporteController::class);
-Route::post('reportes/{id}/estado', [ReporteController::class, 'cambiarEstado']);
-Route::post('reportes/cercanos', [ReporteController::class, 'buscarCercanos']);
+// ============================================
+// REPORTES
+// ============================================
+Route::prefix('reportes')->group(function () {
+    // IMPORTANTE: Rutas específicas PRIMERO
+    
+    // Verificar expansiones automáticas (ejecutar periódicamente)
+    Route::post('verificar-expansiones', [ReporteController::class, 'verificarExpansionesAutomaticas']);
+    
+    // Obtener reportes del usuario
+    Route::get('usuario/{usuarioId}', [ReporteController::class, 'reportesDelUsuario']);
+    
+    // Obtener reportes de un grupo
+    Route::get('grupo/{grupoId}', [ReporteController::class, 'reportesDelGrupo']);
+    
+    // Crear reporte
+    Route::post('/', [ReporteController::class, 'store']);
+    
+    // Expandir reporte manualmente
+    Route::post('{reporteId}/expandir', [ReporteController::class, 'expandirReporte']);
+    
+    // 🧪 TESTING: Expandir reporte inmediatamente (ignora tiempo de espera)
+    Route::post('{reporteId}/expandir-inmediato', [ReporteController::class, 'expandirInmediato']);
+    
+    // Marcar reporte como resuelto
+    Route::put('{reporteId}/resuelto', [ReporteController::class, 'marcarResuelto']);
+    
+    // Obtener reporte específico (SIEMPRE AL FINAL)
+    Route::get('{id}', [ReporteController::class, 'show']);
+});
 
-Route::get('reportes/{reporte}/caracteristicas', [ReporteCaracteristicaController::class, 'index']);
-Route::post('reportes/{reporte}/caracteristicas', [ReporteCaracteristicaController::class, 'store']);
-Route::put('reportes/{reporte}/caracteristicas/{id}', [ReporteCaracteristicaController::class, 'update']);
-Route::delete('reportes/{reporte}/caracteristicas/{id}', [ReporteCaracteristicaController::class, 'destroy']);
+// ============================================
+// RESPUESTAS
+// ============================================
+Route::prefix('respuestas')->group(function () {
+    // IMPORTANTE: Rutas específicas PRIMERO
+    
+    // Obtener respuestas de un reporte
+    Route::get('reporte/{reporteId}', [RespuestaController::class, 'respuestasDelReporte']);
+    
+    // Obtener solo respuestas tipo "encontrado"
+    Route::get('reporte/{reporteId}/encontrado', [RespuestaController::class, 'respuestasEncontrado']);
+    
+    // Crear respuesta
+    Route::post('/', [RespuestaController::class, 'store']);
+    
+    // Marcar respuesta como BIEN
+    Route::put('{respuestaId}/bien', [RespuestaController::class, 'marcarBien']);
+    
+    // Marcar respuesta como ERRÓNEO
+    Route::put('{respuestaId}/erroneo', [RespuestaController::class, 'marcarErroneo']);
+    
+    // Eliminar respuesta
+    Route::delete('{id}', [RespuestaController::class, 'destroy']);
+    
+    // Obtener respuesta específica (SIEMPRE AL FINAL)
+    Route::get('{id}', [RespuestaController::class, 'show']);
+});
 
-Route::get('reportes/{reporte}/imagenes', [ReporteImagenController::class, 'index']);
-Route::post('reportes/{reporte}/imagenes', [ReporteImagenController::class, 'store']);
-Route::put('reportes/{reporte}/imagenes/{id}', [ReporteImagenController::class, 'update']);
-Route::delete('reportes/{reporte}/imagenes/{id}', [ReporteImagenController::class, 'destroy']);
-Route::post('reportes/{reporte}/imagenes/reordenar', [ReporteImagenController::class, 'reordenar']);
+// ============================================
+// NOTIFICACIONES
+// ============================================
+Route::prefix('notificaciones')->group(function () {
+    // IMPORTANTE: Rutas específicas PRIMERO
+    
+    // Obtener todas las notificaciones del usuario
+    Route::get('usuario/{usuarioId}', [NotificacionController::class, 'index']);
+    
+    // Obtener notificaciones no leídas
+    Route::get('usuario/{usuarioId}/no-leidas', [NotificacionController::class, 'noLeidas']);
+    
+    // Marcar todas como leídas
+    Route::put('usuario/{usuarioId}/marcar-todas-leidas', [NotificacionController::class, 'marcarTodasLeidas']);
+    
+    // Eliminar todas las notificaciones
+    Route::delete('usuario/{usuarioId}/eliminar-todas', [NotificacionController::class, 'eliminarTodas']);
+    
+    // Marcar notificación como leída
+    Route::put('{notificacionId}/leida', [NotificacionController::class, 'marcarLeida']);
+    
+    // Eliminar notificación
+    Route::delete('{notificacionId}', [NotificacionController::class, 'destroy']);
+});
 
-Route::get('reportes/{reporte}/videos', [ReporteVideoController::class, 'index']);
-Route::post('reportes/{reporte}/videos', [ReporteVideoController::class, 'store']);
-Route::put('reportes/{reporte}/videos/{id}', [ReporteVideoController::class, 'update']);
-Route::delete('reportes/{reporte}/videos/{id}', [ReporteVideoController::class, 'destroy']);
-Route::post('reportes/{reporte}/videos/reordenar', [ReporteVideoController::class, 'reordenar']);
-
-Route::get('reportes/{reporte}/respuestas', [RespuestaController::class, 'index']);
-Route::post('reportes/{reporte}/respuestas', [RespuestaController::class, 'store']);
-Route::put('reportes/{reporte}/respuestas/{id}', [RespuestaController::class, 'update']);
-Route::delete('reportes/{reporte}/respuestas/{id}', [RespuestaController::class, 'destroy']);
-Route::post('reportes/{reporte}/respuestas/{id}/verificar', [RespuestaController::class, 'marcarVerificada']);
-Route::post('reportes/{reporte}/respuestas/{id}/util', [RespuestaController::class, 'marcarUtil']);
-
-Route::get('respuestas/{respuesta}/imagenes', [RespuestaImagenController::class, 'index']);
-Route::post('respuestas/{respuesta}/imagenes', [RespuestaImagenController::class, 'store']);
-Route::delete('respuestas/{respuesta}/imagenes/{id}', [RespuestaImagenController::class, 'destroy']);
-
-Route::get('respuestas/{respuesta}/videos', [RespuestaVideoController::class, 'index']);
-Route::post('respuestas/{respuesta}/videos', [RespuestaVideoController::class, 'store']);
-Route::delete('respuestas/{respuesta}/videos/{id}', [RespuestaVideoController::class, 'destroy']);
-
-Route::get('reportes/{reporte}/expansiones', [ExpansionReporteController::class, 'index']);
-Route::post('reportes/{reporte}/expansiones', [ExpansionReporteController::class, 'store']);
-Route::post('reportes/{reporte}/expansiones/automatico', [ExpansionReporteController::class, 'expandirAutomatico']);
-Route::delete('reportes/{reporte}/expansiones/{id}', [ExpansionReporteController::class, 'destroy']);
-
-Route::post('grupos/por-cuadrantes', [GrupoController::class, 'obtenerPorCuadrantes']);
-Route::apiResource('grupos', GrupoController::class);
-Route::post('grupos/{id}/miembros', [GrupoController::class, 'agregarMiembro']);
-Route::delete('grupos/{id}/miembros/{usuario}', [GrupoController::class, 'eliminarMiembro']);
-
-Route::get('usuarios/{usuario}/notificaciones', [NotificacionController::class, 'index']);
-Route::get('usuarios/{usuario}/notificaciones/no-leidas', [NotificacionController::class, 'noLeidas']);
-Route::post('notificaciones', [NotificacionController::class, 'store']);
-Route::post('notificaciones/{id}/leer', [NotificacionController::class, 'marcarLeida']);
-Route::post('usuarios/{usuario}/notificaciones/leer-todas', [NotificacionController::class, 'marcarTodasLeidas']);
-Route::delete('notificaciones/{id}', [NotificacionController::class, 'destroy']);
-
-Route::apiResource('notificacion-datos', NotificacionDatoController::class);
-Route::get('notificaciones/{notificacionId}/datos', [NotificacionDatoController::class, 'getByNotificacion']);
-
-Route::get('configuracion', [ConfiguracionSistemaController::class, 'index']);
-Route::get('configuracion/{clave}', [ConfiguracionSistemaController::class, 'show']);
-Route::get('configuracion/{clave}/valor', [ConfiguracionSistemaController::class, 'obtenerValor']);
-Route::post('configuracion', [ConfiguracionSistemaController::class, 'store']);
-Route::put('configuracion/{clave}', [ConfiguracionSistemaController::class, 'update']);
-Route::delete('configuracion/{clave}', [ConfiguracionSistemaController::class, 'destroy']);
-
-Route::post('/grupos/{id}/miembros', [GrupoMiembroController::class, 'agregarMiembro']);
-Route::get('/grupo-miembros', [GrupoMiembroController::class, 'index']);
-Route::post('/grupo-miembros', [GrupoMiembroController::class, 'store']);
-Route::get('/grupo-miembros/{id}', [GrupoMiembroController::class, 'show']);
-Route::put('/grupo-miembros/{id}', [GrupoMiembroController::class, 'update']);
-Route::delete('/grupo-miembros/{id}', [GrupoMiembroController::class, 'destroy']);
-
-Route::get('/grupos/{grupoId}/miembros', [GrupoMiembroController::class, 'miembrosPorGrupo']);
-Route::get('/usuarios/{usuarioId}/grupos', [GrupoMiembroController::class, 'gruposPorUsuario']);
+// ============================================
+// RUTA DE PRUEBA
+// ============================================
+Route::get('/ping', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'API funcionando correctamente',
+        'timestamp' => now()
+    ]);
+});

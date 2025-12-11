@@ -74,11 +74,12 @@ class Usuario extends Authenticatable
         return $this->hasMany(GrupoMiembro::class, 'usuario_id');
     }
 
+
     public function grupos()
     {
         return $this->belongsToMany(Grupo::class, 'grupo_miembros', 'usuario_id', 'grupo_id')
             ->withPivot('rol', 'notificaciones_activas', 'joined_at')
-            ->withTimestamps();
+            ->using(GrupoMiembro::class); // Usa el modelo pivot que tiene timestamps = false
     }
 
     public function notificaciones()

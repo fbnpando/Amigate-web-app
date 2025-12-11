@@ -1,93 +1,174 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Notificacion;
+use App\Models\Usuario;
+use App\Events\NuevaNotificacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class NotificacionController extends Controller
 {
+    /**
+     * Obtener notificaciones del usuario
+     */
     public function index($usuarioId)
     {
-        $notificaciones = Notificacion::where('usuario_id', $usuarioId)
-            ->with('datos')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
-        
-        return response()->json($notificaciones);
+        try {
+            $notificaciones = Notificacion::where('usuario_id', $usuarioId)
+                ->with('datos')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $noLeidas = $notificaciones->where('leida', false)->count();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'notificaciones' => $notificaciones,
+                    'total' => $notificaciones->count(),
+                    'no_leidas' => $noLeidas
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener notificaciones',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
+    /**
+     * Obtener notificaciones no leídas
+     */
     public function noLeidas($usuarioId)
     {
-        $notificaciones = Notificacion::where('usuario_id', $usuarioId)
-            ->where('leida', false)
-            ->with('datos')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
-        return response()->json($notificaciones);
-    }
-
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'usuario_id' => 'required|exists:usuarios,id',
-            'tipo' => 'required|string|max:50',
-            'titulo' => 'required|string|max:200',
-            'mensaje' => 'required|string',
-            'datos' => 'nullable|array'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        DB::beginTransaction();
         try {
-            $notificacion = Notificacion::create($request->except('datos'));
+            $notificaciones = Notificacion::where('usuario_id', $usuarioId)
+                ->where('leida', false)
+                ->with('datos')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-            if ($request->has('datos')) {
-                foreach ($request->datos as $clave => $valor) {
-                    $notificacion->datos()->create([
-                        'clave' => $clave,
-                        'valor' => $valor
-                    ]);
-                }
-            }
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'notificaciones' => $notificaciones,
+                    'total' => $notificaciones->count()
+                ]
+            ], 200);
 
-            DB::commit();
-            
-            return response()->json($notificacion->load('datos'), 201);
         } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Error al crear notificación: ' . $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener notificaciones',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
-    public function marcarLeida($id)
+    /**
+     * Marcar notificación como leída
+     */
+    public function marcarLeida($notificacionId)
     {
-        $notificacion = Notificacion::findOrFail($id);
-        $notificacion->update(['leida' => true]);
-        
-        return response()->json($notificacion);
+        try {
+            $notificacion = Notificacion::findOrFail($notificacionId);
+
+            $notificacion->update([
+                'leida' => true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notificación marcada como leída',
+                'data' => $notificacion
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al marcar notificación',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
+    /**
+     * Marcar todas las notificaciones como leídas
+     */
     public function marcarTodasLeidas($usuarioId)
     {
-        Notificacion::where('usuario_id', $usuarioId)
-            ->where('leida', false)
-            ->update(['leida' => true]);
-        
-        return response()->json(['message' => 'Todas las notificaciones marcadas como leídas'], 200);
+        try {
+            $actualizadas = Notificacion::where('usuario_id', $usuarioId)
+                ->where('leida', false)
+                ->update(['leida' => true]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Todas las notificaciones marcadas como leídas',
+                'data' => [
+                    'notificaciones_actualizadas' => $actualizadas
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al marcar notificaciones',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function destroy($id)
+    /**
+     * Eliminar notificación
+     */
+    public function destroy($notificacionId)
     {
-        $notificacion = Notificacion::findOrFail($id);
-        $notificacion->delete();
-        
-        return response()->json(['message' => 'Notificación eliminada correctamente'], 200);
+        try {
+            $notificacion = Notificacion::findOrFail($notificacionId);
+            $notificacion->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notificación eliminada exitosamente'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar notificación',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Eliminar todas las notificaciones del usuario
+     */
+    public function eliminarTodas($usuarioId)
+    {
+        try {
+            $eliminadas = Notificacion::where('usuario_id', $usuarioId)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Todas las notificaciones eliminadas',
+                'data' => [
+                    'notificaciones_eliminadas' => $eliminadas
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar notificaciones',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

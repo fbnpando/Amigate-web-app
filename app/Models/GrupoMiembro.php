@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-class GrupoMiembro extends Model
+class GrupoMiembro extends Pivot
 {
     use HasUuids;
 
