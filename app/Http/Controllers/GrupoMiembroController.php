@@ -42,7 +42,7 @@ class GrupoMiembroController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Verificar que no exista ya
+        
         $existe = GrupoMiembro::where('grupo_id', $request->grupo_id)
             ->where('usuario_id', $request->usuario_id)
             ->exists();
@@ -53,7 +53,7 @@ class GrupoMiembroController extends Controller
 
         $miembro = GrupoMiembro::create($request->all());
 
-        // Incrementar contador
+        
         Grupo::find($request->grupo_id)->increment('miembros_count');
         
         return response()->json($miembro->load(['grupo', 'usuario']), 201);
@@ -89,7 +89,7 @@ class GrupoMiembroController extends Controller
         $grupoId = $miembro->grupo_id;
         $miembro->delete();
 
-        // Decrementar contador
+        
         Grupo::find($grupoId)->decrement('miembros_count');
         
         return response()->json(['message' => 'Miembro eliminado del grupo'], 200);

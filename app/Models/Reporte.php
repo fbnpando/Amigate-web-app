@@ -19,43 +19,35 @@ class Reporte extends Model
         'tipo_reporte',
         'titulo',
         'descripcion',
-        'ubicacion_exacta_lat',      // ← Cambio: eran columnas separadas
-        'ubicacion_exacta_lng',      // ← Cambio: no un array
+        'ubicacion_exacta_lat',
+        'ubicacion_exacta_lng',
         'direccion_referencia',
-        // 'caracteristicas',        // ← NO existe en la tabla principal
+        
         'fecha_perdida',
         'fecha_reporte',
         'estado',
         'prioridad',
-        // 'cuadrantes_expandidos',  // ← NO existe en la tabla
         'nivel_expansion',
         'max_expansion',
         'proxima_expansion',
-        // 'imagenes',               // ← Tabla separada: reporte_imagenes
-        // 'videos',                 // ← Tabla separada: reporte_videos
         'contacto_publico',
         'telefono_contacto',
         'email_contacto',
         'recompensa',
         'vistas',
-        // 'respuestas_count',       // ← ELIMINADO: no existe
+        
     ];
 
     protected $casts = [
         'ubicacion_exacta_lat' => 'decimal:8',
         'ubicacion_exacta_lng' => 'decimal:8',
-        // 'ubicacion_exacta' => 'array',     // ← ELIMINAR
-        // 'caracteristicas' => 'array',      // ← ELIMINAR
         'fecha_perdida' => 'datetime',
         'fecha_reporte' => 'datetime',
         'proxima_expansion' => 'datetime',
-        // 'imagenes' => 'array',             // ← ELIMINAR
-        // 'videos' => 'array',               // ← ELIMINAR
-        // 'cuadrantes_expandidos' => 'array', // ← ELIMINAR
         'contacto_publico' => 'boolean',
         'recompensa' => 'decimal:2',
         'vistas' => 'integer',
-        // 'respuestas_count' => 'integer',   // ← ELIMINAR
+        
         'nivel_expansion' => 'integer',
         'max_expansion' => 'integer',
         'created_at' => 'datetime',
@@ -69,15 +61,15 @@ class Reporte extends Model
         'max_expansion' => 3,
         'contacto_publico' => true,
         'vistas' => 0,
-        // 'respuestas_count' => 0,  // ← ELIMINAR
-        // 'imagenes' => '[]',       // ← ELIMINAR
-        // 'videos' => '[]',         // ← ELIMINAR
-        // 'cuadrantes_expandidos' => '[]', // ← ELIMINAR
+        
+        
+        
+        
     ];
 
-    // ==========================================
-    // RELACIONES
-    // ==========================================
+    
+    
+    
 
     public function usuario()
     {
@@ -104,7 +96,7 @@ class Reporte extends Model
         return $this->hasMany(ExpansionReporte::class, 'reporte_id');
     }
 
-    // Nuevas relaciones según tu estructura de BD
+    
     public function imagenes()
     {
         return $this->hasMany(ReporteImagen::class, 'reporte_id');
@@ -120,9 +112,9 @@ class Reporte extends Model
         return $this->hasMany(ReporteCaracteristica::class, 'reporte_id');
     }
 
-    // ==========================================
-    // SCOPES
-    // ==========================================
+    
+    
+    
 
     public function scopeActivos($query)
     {
@@ -169,9 +161,9 @@ class Reporte extends Model
         return $query->where('created_at', '>=', now()->subDays(7));
     }
 
-    // ==========================================
-    // MÉTODOS AUXILIARES
-    // ==========================================
+    
+    
+    
 
     public function estaActivo()
     {
@@ -237,9 +229,7 @@ class Reporte extends Model
         return $this->increment('vistas');
     }
 
-    /**
-     * Obtiene el contador de respuestas dinámicamente
-     */
+    
     public function getRespuestasCountAttribute()
     {
         return $this->respuestas()->count();
@@ -304,9 +294,7 @@ class Reporte extends Model
         return $this->created_at->diffInDays(now());
     }
 
-    /**
-     * Accessor para obtener ubicación como array
-     */
+    
     public function getUbicacionExactaAttribute()
     {
         if ($this->ubicacion_exacta_lat && $this->ubicacion_exacta_lng) {

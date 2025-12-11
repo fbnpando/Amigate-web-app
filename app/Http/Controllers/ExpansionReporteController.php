@@ -41,7 +41,7 @@ class ExpansionReporteController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Verificar que no exista ya esta expansión
+        
         $existe = ExpansionReporte::where('reporte_id', $request->reporte_id)
             ->where('cuadrante_expandido_id', $request->cuadrante_expandido_id)
             ->exists();

@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class GrupoController extends Controller
 {
-    /**
-     * Lista todos los grupos con información completa
-     */
+    
     public function index()
     {
         $grupos = Grupo::with(['cuadrante', 'miembros'])
@@ -29,15 +27,13 @@ class GrupoController extends Controller
         return view('grupos.index', compact('grupos'));
     }
 
-    /**
-     * Muestra un grupo específico con todos sus reportes
-     */
+    
     public function show($id)
     {
         $grupo = Grupo::with([
                 'cuadrante',
                 'miembros' => function ($query) {
-                    $query->orderBy('grupo_miembros.rol', 'desc'); // Admins primero (tabla correcta)
+                    $query->orderBy('grupo_miembros.rol', 'desc'); 
                 }
             ])
             ->withCount([
@@ -51,7 +47,7 @@ class GrupoController extends Controller
             ])
             ->findOrFail($id);
 
-        // Obtener reportes del grupo con toda la información necesaria
+        
         $reportes = $grupo->reportes()
             ->with([
                 'usuario',
@@ -65,9 +61,7 @@ class GrupoController extends Controller
         return view('grupos.show', compact('grupo', 'reportes'));
     }
 
-    /**
-     * Crear nuevo grupo
-     */
+    
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -85,7 +79,7 @@ class GrupoController extends Controller
 
         $grupo = Grupo::create($request->all());
         
-        // Agregar al creador como admin del grupo
+        
         if (Auth::check()) {
             $grupo->miembros()->attach(Auth::id(), [
                 'rol' => 'admin',
@@ -97,9 +91,7 @@ class GrupoController extends Controller
         return response()->json($grupo->load('miembros', 'cuadrante'), 201);
     }
 
-    /**
-     * Actualizar grupo
-     */
+    
     public function update(Request $request, $id)
     {
         $grupo = Grupo::findOrFail($id);
@@ -121,9 +113,7 @@ class GrupoController extends Controller
         return response()->json($grupo->load('miembros', 'cuadrante'));
     }
 
-    /**
-     * Eliminar grupo
-     */
+    
     public function destroy($id)
     {
         $grupo = Grupo::findOrFail($id);
@@ -132,9 +122,7 @@ class GrupoController extends Controller
         return response()->json(['message' => 'Grupo eliminado correctamente'], 200);
     }
 
-    /**
-     * Unirse a un grupo
-     */
+    
     public function join($id)
     {
         $grupo = Grupo::findOrFail($id);
@@ -145,36 +133,34 @@ class GrupoController extends Controller
 
         $usuario = Auth::user();
 
-        // Verificar si ya es miembro
+        
         if ($grupo->miembros()->where('usuario_id', $usuario->id)->exists()) {
             return redirect()->route('grupos.show', $id)
                 ->with('info', 'Ya eres miembro de este grupo');
         }
 
-        // Si requiere aprobación, crear solicitud
+        
         if ($grupo->requiere_aprobacion) {
-            // Aquí implementarías la lógica de solicitudes
+            
             return redirect()->route('grupos.show', $id)
                 ->with('success', 'Solicitud enviada. Espera la aprobación del administrador.');
         }
 
-        // Unirse directamente
+        
         $grupo->miembros()->attach($usuario->id, [
             'rol' => 'miembro',
             'joined_at' => now(),
             'notificaciones_activas' => true
         ]);
         
-        // Incrementar contador de miembros
+        
         $grupo->increment('miembros_count');
 
         return redirect()->route('grupos.show', $id)
             ->with('success', 'Te has unido al grupo exitosamente');
     }
 
-    /**
-     * Salir de un grupo
-     */
+    
     public function leave($id)
     {
         $grupo = Grupo::findOrFail($id);
@@ -185,7 +171,7 @@ class GrupoController extends Controller
 
         $usuario = Auth::user();
         
-        // Verificar que no sea el último admin
+        
         $esAdmin = $grupo->miembros()
             ->where('usuario_id', $usuario->id)
             ->wherePivot('rol', 'admin')
@@ -204,16 +190,14 @@ class GrupoController extends Controller
         
         $grupo->miembros()->detach($usuario->id);
         
-        // Decrementar contador de miembros
+        
         $grupo->decrement('miembros_count');
 
         return redirect()->route('grupos.index')
             ->with('success', 'Has salido del grupo');
     }
     
-    /**
-     * Actualizar rol de un miembro (solo admins)
-     */
+    
     public function updateMemberRole(Request $request, $grupoId, $usuarioId)
     {
         $validator = Validator::make($request->all(), [
@@ -226,12 +210,12 @@ class GrupoController extends Controller
 
         $grupo = Grupo::findOrFail($grupoId);
         
-        // Verificar que el usuario actual sea admin
+        
         if (!Auth::check() || !$grupo->esAdmin(Auth::id())) {
             return response()->json(['error' => 'No tienes permisos para realizar esta acción'], 403);
         }
 
-        // Actualizar el rol
+        
         $grupo->miembros()->updateExistingPivot($usuarioId, [
             'rol' => $request->rol
         ]);
@@ -242,19 +226,17 @@ class GrupoController extends Controller
         ]);
     }
     
-    /**
-     * Remover un miembro del grupo (solo admins)
-     */
+    
     public function removeMember($grupoId, $usuarioId)
     {
         $grupo = Grupo::findOrFail($grupoId);
         
-        // Verificar que el usuario actual sea admin
+        
         if (!Auth::check() || !$grupo->esAdmin(Auth::id())) {
             return response()->json(['error' => 'No tienes permisos para realizar esta acción'], 403);
         }
 
-        // No permitir remover al último admin
+        
         $miembro = $grupo->miembros()->find($usuarioId);
         if ($miembro && $miembro->pivot->rol === 'admin') {
             $cantidadAdmins = $grupo->miembros()

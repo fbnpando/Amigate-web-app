@@ -9,12 +9,10 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-    /**
-     * Muestra el formulario de login
-     */
+    
     public function showLoginForm()
     {
-        // Si ya está autenticado, redirigir al dashboard
+        
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
@@ -22,9 +20,7 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Procesa el login
-     */
+    
     public function login(Request $request)
     {
         $request->validate([
@@ -46,9 +42,7 @@ class LoginController extends Controller
         ]);
     }
 
-    /**
-     * Cierra la sesión
-     */
+    
     public function logout(Request $request)
     {
         Auth::logout();

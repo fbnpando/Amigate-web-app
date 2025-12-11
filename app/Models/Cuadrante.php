@@ -12,7 +12,7 @@ class Cuadrante extends Model
 
     protected $table = 'cuadrantes';
 
-    public $timestamps = false; // La tabla solo tiene created_at
+    public $timestamps = false; 
 
     protected $fillable = [
         'codigo',
@@ -46,7 +46,7 @@ class Cuadrante extends Model
         'activo' => true,
     ];
 
-    // Relaciones
+    
     public function reportes()
     {
         return $this->hasMany(Reporte::class);
@@ -67,7 +67,7 @@ class Cuadrante extends Model
         return $this->hasMany(ExpansionReporte::class, 'cuadrante_expandido_id');
     }
 
-    // Scopes
+    
     public function scopeActivos($query)
     {
         return $query->where('activo', true);
@@ -93,7 +93,7 @@ class Cuadrante extends Model
         return $query->where('columna', $columna);
     }
 
-    // Métodos auxiliares
+    
     public function esActivo()
     {
         return $this->activo === true;
@@ -128,11 +128,11 @@ class Cuadrante extends Model
     public function getCuadrantesAdyacentes()
     {
         return self::where(function($query) {
-            // Mismo fila, columnas adyacentes
+            
             $query->where('fila', $this->fila)
                   ->whereIn('columna', [$this->columna - 1, $this->columna + 1]);
         })->orWhere(function($query) {
-            // Filas adyacentes, misma columna
+            
             $filaActual = ord($this->fila);
             $filaAnterior = chr($filaActual - 1);
             $filaSiguiente = chr($filaActual + 1);

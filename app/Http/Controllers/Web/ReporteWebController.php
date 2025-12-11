@@ -1,8 +1,8 @@
 <?php
 
-// ============================================
-// app/Http/Controllers/Web/ReporteWebController.php
-// ============================================
+
+
+
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
@@ -64,7 +64,7 @@ class ReporteWebController extends Controller
         $reporte = Reporte::with(['usuario', 'categoria', 'cuadrante', 'respuestas'])
             ->findOrFail($id);
         
-        // Incrementar vistas
+        
         $reporte->increment('vistas');
         
         return view('reportes.show', compact('reporte'));

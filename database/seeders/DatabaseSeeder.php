@@ -10,16 +10,19 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
+    
     public function run(): void
     {
-        // Crear usuario administrador por defecto
+        
         User::factory()->create([
             'name' => 'Administrador',
             'email' => 'admin@amigate.com',
             'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+        ]);
+
+        
+        $this->call([
+            RolePermissionSeeder::class,
         ]);
     }
 }

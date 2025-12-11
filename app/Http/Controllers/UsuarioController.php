@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UsuarioController extends Controller
 {
-    // GET /api/usuarios - Listar todos
+    
     public function index()
     {
         $usuarios = Usuario::with(['reportes', 'grupos'])
@@ -16,7 +16,7 @@ class UsuarioController extends Controller
         return response()->json($usuarios);
     }
 
-    // POST /api/usuarios - Crear nuevo
+    
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -36,7 +36,7 @@ class UsuarioController extends Controller
         return response()->json($usuario, 201);
     }
 
-    // GET /api/usuarios/{id} - Ver uno
+    
     public function show($id)
     {
         $usuario = Usuario::with(['reportes', 'respuestas', 'grupos', 'notificaciones'])
@@ -45,7 +45,7 @@ class UsuarioController extends Controller
         return response()->json($usuario);
     }
 
-    // PUT/PATCH /api/usuarios/{id} - Actualizar
+    
     public function update(Request $request, $id)
     {
         $usuario = Usuario::findOrFail($id);
@@ -67,7 +67,7 @@ class UsuarioController extends Controller
         return response()->json($usuario);
     }
 
-    // DELETE /api/usuarios/{id} - Eliminar
+    
     public function destroy($id)
     {
         $usuario = Usuario::findOrFail($id);

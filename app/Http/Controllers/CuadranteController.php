@@ -12,7 +12,7 @@ class CuadranteController extends Controller
     {
         $query = Cuadrante::query();
 
-        // Filtros opcionales
+        
         if ($request->has('ciudad')) {
             $query->where('ciudad', $request->ciudad);
         }
@@ -98,7 +98,7 @@ class CuadranteController extends Controller
         return response()->json(['message' => 'Cuadrante eliminado correctamente'], 200);
     }
 
-    // Métodos adicionales útiles
+    
     public function adyacentes($id)
     {
         $cuadrante = Cuadrante::findOrFail($id);

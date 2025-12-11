@@ -1,5 +1,5 @@
 
-{{-- resources/views/usuarios/edit.blade.php --}}
+
 @extends('layouts.app')
 
 @section('title', 'Editar Usuario')

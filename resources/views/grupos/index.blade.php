@@ -1,4 +1,4 @@
-{{-- resources/views/grupos/index.blade.php --}}
+
 @extends('layouts.app')
 
 @section('title', 'Grupos')
@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Header con Búsqueda y Filtros -->
+    
     <div class="row mb-4">
         <div class="col-md-8">
             <div class="input-group">
@@ -23,13 +23,13 @@
         </div>
     </div>
 
-    <!-- Grid de Grupos (Estilo WhatsApp/Telegram) -->
+    
     <div class="row" id="gruposGrid">
         @forelse($grupos as $grupo)
         <div class="col-xl-3 col-lg-4 col-md-6 mb-4 grupo-card" data-tipo="{{ $grupo->publico ? 'publicos' : 'privados' }}">
             <a href="{{ route('grupos.show', $grupo->id) }}" class="text-decoration-none">
                 <div class="card h-100 shadow-sm hover-card">
-                    <!-- Imagen del Grupo -->
+                    
                     <div class="position-relative">
                         @if($grupo->imagen_url)
                             <img src="{{ $grupo->imagen_url }}" class="card-img-top" alt="{{ $grupo->nombre }}" style="height: 180px; object-fit: cover;">
@@ -41,7 +41,7 @@
                             </div>
                         @endif
                         
-                        <!-- Badge de Tipo -->
+                        
                         <div class="position-absolute top-0 end-0 m-2">
                             @if($grupo->publico)
                                 <span class="badge bg-success"><i class="bi bi-unlock"></i> Público</span>
@@ -50,7 +50,7 @@
                             @endif
                         </div>
 
-                        <!-- Badge de Miembros -->
+                        
                         <div class="position-absolute bottom-0 start-0 m-2">
                             <span class="badge bg-dark bg-opacity-75">
                                 <i class="bi bi-people"></i> {{ $grupo->miembros_count }} miembros
@@ -59,22 +59,22 @@
                     </div>
 
                     <div class="card-body">
-                        <!-- Nombre del Grupo -->
+                        
                         <h5 class="card-title mb-2 text-dark">{{ Str::limit($grupo->nombre, 40) }}</h5>
                         
-                        <!-- Cuadrante -->
+                        
                         <p class="text-muted mb-2 small">
                             <i class="bi bi-geo-alt"></i> {{ $grupo->cuadrante->codigo }} - {{ Str::limit($grupo->cuadrante->nombre, 30) }}
                         </p>
 
-                        <!-- Descripción -->
+                        
                         @if($grupo->descripcion)
                         <p class="card-text text-muted small mb-3">
                             {{ Str::limit($grupo->descripcion, 80) }}
                         </p>
                         @endif
 
-                        <!-- Estadísticas de Reportes -->
+                        
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <div>
                                 <span class="badge bg-warning text-dark">
@@ -89,7 +89,7 @@
                             </small>
                         </div>
 
-                        <!-- Últimos Miembros (Avatares) -->
+                        
                         <div class="d-flex align-items-center mt-3">
                             <div class="d-flex">
                                 @foreach($grupo->miembros->take(4) as $miembro)
@@ -113,7 +113,7 @@
                         </div>
                     </div>
 
-                    <!-- Footer -->
+                    
                     <div class="card-footer bg-transparent border-top-0">
                         <div class="d-grid">
                             <button class="btn btn-primary btn-sm">
@@ -135,24 +135,24 @@
         @endforelse
     </div>
 
-    <!-- Paginación -->
+    
     @if($grupos->hasPages())
     <div class="row mt-4">
         <div class="col-12">
             <div class="d-flex justify-content-center align-items-center gap-2">
-                {{-- Botón Anterior --}}
+                
                 @if($grupos->onFirstPage())
                     <span class="btn btn-outline-secondary disabled">Anterior</span>
                 @else
                     <a href="{{ $grupos->previousPageUrl() }}" class="btn btn-outline-primary">Anterior</a>
                 @endif
                 
-                {{-- Información de páginas --}}
+                
                 <span class="text-muted">
                     Página {{ $grupos->currentPage() }} de {{ $grupos->lastPage() }}
                 </span>
                 
-                {{-- Botón Siguiente --}}
+                
                 @if($grupos->hasMorePages())
                     <a href="{{ $grupos->nextPageUrl() }}" class="btn btn-outline-primary">Siguiente</a>
                 @else

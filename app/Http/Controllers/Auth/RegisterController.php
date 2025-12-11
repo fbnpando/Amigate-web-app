@@ -11,12 +11,10 @@ use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
 {
-    /**
-     * Muestra el formulario de registro
-     */
+    
     public function showRegisterForm()
     {
-        // Si ya está autenticado, redirigir al dashboard
+        
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
@@ -24,9 +22,7 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Procesa el registro
-     */
+    
     public function register(Request $request)
     {
         $request->validate([
@@ -41,7 +37,10 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Autenticar al usuario después del registro
+        
+        $user->assignRole('usuario');
+
+        
         Auth::login($user);
 
         return redirect()->route('dashboard')->with('success', '¡Registro exitoso! Bienvenido a Amigate.');

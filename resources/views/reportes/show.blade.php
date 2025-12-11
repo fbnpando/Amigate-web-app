@@ -1,5 +1,5 @@
 
-{{-- resources/views/reportes/show.blade.php --}}
+
 @extends('layouts.app')
 
 @section('title', 'Ver Reporte')
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <!-- Información Principal -->
+                
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -97,7 +97,7 @@
 
                 <hr>
 
-                <!-- Descripción -->
+                
                 <div class="mb-4">
                     <h6><i class="bi bi-file-text me-2"></i>Descripción</h6>
                     <p class="text-justify">{{ $reporte->descripcion }}</p>
@@ -110,7 +110,7 @@
                 </div>
                 @endif
 
-                <!-- Información de Contacto -->
+                
                 @if($reporte->contacto_publico)
                 <div class="mb-4">
                     <h6><i class="bi bi-telephone me-2"></i>Información de Contacto</h6>
@@ -131,7 +131,7 @@
                 </div>
                 @endif
 
-                <!-- Estadísticas -->
+                
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card bg-light">

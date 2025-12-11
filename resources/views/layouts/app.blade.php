@@ -6,11 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Amigate - Admin')</title>
     
-    <!-- Bootstrap 5 CSS -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- DataTables CSS -->
+    
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     
     <style>
@@ -80,12 +80,14 @@
             top: 0;
             left: 0;
             width: var(--sidebar-width);
-            min-height: 100vh;
+            height: 100vh; /* Altura fija para poder hacer scroll */
             background: linear-gradient(180deg, var(--sidebar-dark) 0%, var(--sidebar-darker) 100%);
             box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-            z-index: 1000;
+            z-index: 1050; /* Que se vea encima de todo */
             overflow-y: auto;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
         
         .sidebar::-webkit-scrollbar {
@@ -128,7 +130,8 @@
         }
         
         .sidebar .nav {
-            padding: 20px 10px;
+            padding: 20px 10px 50px 10px; /* Espacio extra abajo para que no se corte */
+            flex: 1;
         }
         
         .sidebar .nav-link {
@@ -676,17 +679,17 @@
     @stack('styles')
 </head>
 <body>
-    <!-- Botón hamburguesa para móvil -->
+    
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
         <i class="bi bi-list"></i>
     </button>
     
-    <!-- Overlay para móvil -->
+    
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     
     <div class="container-fluid p-0" style="overflow-x: hidden; max-width: 100%;">
         <div class="row g-0" style="margin: 0; max-width: 100%;">
-            <!-- Sidebar -->
+            
             <nav class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <h4>
@@ -745,6 +748,14 @@
                             <span>Notificaciones</span>
                         </a>
                     </li>
+                    @role('administrador')
+                    <li class="nav-item mt-3">
+                        <a class="nav-link {{ request()->routeIs('users.roles.*') ? 'active' : '' }}" href="{{ route('users.roles.index') }}">
+                            <i class="bi bi-shield-lock"></i>
+                            <span>Gestión de Roles</span>
+                        </a>
+                    </li>
+                    @endrole
                     <li class="nav-item mt-3">
                         <a class="nav-link {{ request()->routeIs('configuracion.*') ? 'active' : '' }}" href="{{ route('configuracion.index') }}">
                             <i class="bi bi-gear"></i>
@@ -754,9 +765,9 @@
                 </ul>
             </nav>
 
-            <!-- Main content -->
+            
             <main class="main-content col-12">
-                <!-- Top Navigation -->
+                
                 <nav class="top-navbar">
                     <div class="d-flex justify-content-between align-items-center">
                         <h1 class="navbar-brand mb-0">@yield('page-title', 'Dashboard')</h1>
@@ -778,7 +789,7 @@
                     </div>
                 </nav>
 
-                <!-- Alerts -->
+                
                 @if(session('success'))
                     <div class="content-wrapper">
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -799,7 +810,7 @@
                     </div>
                 @endif
 
-                <!-- Content -->
+                
                 <div class="content-wrapper">
                     @yield('content')
                 </div>
@@ -807,14 +818,14 @@
         </div>
     </div>
 
-    <!-- jQuery -->
+    
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <!-- Bootstrap 5 JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- DataTables JS -->
+    
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- SweetAlert2 -->
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>

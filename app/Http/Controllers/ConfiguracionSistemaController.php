@@ -70,7 +70,7 @@ class ConfiguracionSistemaController extends Controller
         
         return response()->json([
             'clave' => $config->clave,
-            'valor' => $config->valor, // Ya convertido por el accessor
+            'valor' => $config->valor, 
             'tipo' => $config->tipo
         ]);
     }

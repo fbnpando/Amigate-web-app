@@ -1,11 +1,11 @@
-{{-- resources/views/configuracion/index.blade.php --}}
+
 @extends('layouts.app')
 
 @section('title', 'Configuración')
 @section('page-title', 'Configuración del Sistema')
 
 @section('content')
-{{-- Estadísticas Generales --}}
+
 <div class="row mb-4">
     <div class="col-xl-3 col-md-6 mb-3">
         <div class="card border-0 shadow-sm h-100">
@@ -86,7 +86,7 @@
     </div>
 </div>
 
-{{-- Panel Principal --}}
+
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white border-0 py-3">
         <div class="row align-items-center">

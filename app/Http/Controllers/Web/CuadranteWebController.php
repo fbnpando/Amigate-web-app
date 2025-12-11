@@ -39,7 +39,7 @@ class CuadranteWebController extends Controller
 
         $cuadrante = Cuadrante::create($validated);
 
-        // Si es una petición AJAX, devolver JSON
+        
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json($cuadrante, 201);
         }

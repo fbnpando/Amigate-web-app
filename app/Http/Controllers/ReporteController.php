@@ -11,7 +11,7 @@ class ReporteController extends Controller
     {
         $query = Reporte::with(['usuario', 'categoria', 'cuadrante', 'respuestas']);
 
-        // Filtros opcionales
+        
         if ($request->has('tipo_reporte')) {
             $query->where('tipo_reporte', $request->tipo_reporte);
         }
@@ -67,7 +67,7 @@ class ReporteController extends Controller
             'expansiones'
         ])->findOrFail($id);
 
-        // Incrementar contador de vistas
+        
         $reporte->increment('vistas');
         
         return response()->json($reporte);

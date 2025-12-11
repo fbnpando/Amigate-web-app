@@ -356,7 +356,7 @@
 @endpush
 
 @section('content')
-{{-- Estadísticas Principales --}}
+
 <div class="row mb-4">
     <div class="col-xl-3 col-md-6 mb-3">
         <div class="card border-0 shadow-sm h-100">
@@ -431,9 +431,9 @@
     </div>
 </div>
 
-{{-- Mapa y Controles --}}
+
 <div class="row g-4">
-    {{-- Mapa --}}
+    
     <div class="col-xl-8 col-lg-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white border-0 py-3">
@@ -451,7 +451,7 @@
                 <div class="map-container">
                     <div id="map"></div>
                     
-                    {{-- Controles flotantes en el mapa --}}
+                    
                     <div class="map-controls d-none d-md-block">
                         <h6><i class="bi bi-sliders"></i> Controles Rápidos</h6>
                         <div class="mb-2">
@@ -463,7 +463,7 @@
                         </button>
                     </div>
                     
-                    {{-- Leyenda de Zonas --}}
+                    
                     <div class="legend">
                         <h6><i class="bi bi-info-circle"></i> Zonas</h6>
                         <div class="legend-item">
@@ -492,7 +492,7 @@
         </div>
     </div>
     
-    {{-- Panel de Control --}}
+    
     <div class="col-xl-4 col-lg-12">
         <div class="controls-sidebar">
             <h5 class="mb-4 fw-bold">

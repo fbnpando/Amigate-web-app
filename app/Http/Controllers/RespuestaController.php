@@ -37,7 +37,7 @@ class RespuestaController extends Controller
 
         $respuesta = Respuesta::create($request->all());
 
-        // Incrementar contador de respuestas en el reporte
+        
         $respuesta->reporte->increment('respuestas_count');
         
         return response()->json($respuesta, 201);

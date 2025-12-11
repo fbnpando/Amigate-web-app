@@ -1,7 +1,7 @@
 <?php
-// ============================================
-// app/Http/Controllers/Web/ConfiguracionWebController.php
-// ============================================
+
+
+
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;

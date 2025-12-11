@@ -1,5 +1,5 @@
 
-{{-- resources/views/usuarios/create.blade.php --}}
+
 @extends('layouts.app')
 
 @section('title', 'Crear Usuario')

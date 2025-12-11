@@ -555,7 +555,7 @@
 @endpush
 
 @section('content')
-{{-- Header del Dashboard --}}
+
 <div class="dashboard-header">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div class="flex-grow-1">
@@ -578,7 +578,7 @@
     </div>
 </div>
 
-{{-- Estadísticas Principales --}}
+
 <div class="row g-4 mb-4">
     <div class="col-xl-3 col-md-6">
         <div class="stat-card primary">
@@ -637,7 +637,7 @@
     </div>
 </div>
 
-{{-- Estadísticas Secundarias --}}
+
 <div class="row g-4 mb-4">
     <div class="col-xl-3 col-md-6">
         <div class="mini-stat-card danger">
@@ -680,7 +680,7 @@
     </div>
 </div>
 
-{{-- Gráficos y Visualizaciones --}}
+
 <div class="row g-4 mb-4">
     <div class="col-xl-6">
         <div class="chart-container">
@@ -713,9 +713,9 @@
     </div>
 </div>
 
-{{-- Contenido Principal --}}
+
 <div class="row g-4">
-    {{-- Últimos Reportes --}}
+    
     <div class="col-xl-8">
         <div class="activity-card">
             <div class="card-header bg-white border-0 py-4 px-4">
@@ -806,10 +806,10 @@
         </div>
     </div>
     
-    {{-- Sidebar Widgets --}}
+    
     <div class="col-xl-4">
         <div class="row g-4">
-            {{-- Nuevos Usuarios --}}
+            
             <div class="col-12">
                 <div class="activity-card">
                     <div class="card-header bg-white border-0 py-4 px-4">
@@ -851,7 +851,7 @@
                 </div>
             </div>
             
-            {{-- Categorías Populares --}}
+            
             <div class="col-12">
                 <div class="activity-card">
                     <div class="card-header bg-white border-0 py-4 px-4">
