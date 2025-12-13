@@ -33,8 +33,8 @@ services:
       - laravel
     networks:
       - amigate-net
-      # - internal-network
-      # - proxy-network
+      - internal-network
+      - proxy-network
   db:
     image: postgres:latest
     container_name: amigate-db
@@ -43,20 +43,18 @@ services:
       POSTGRES_DB: amigate
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
-      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - db-data:/var/lib/postgresql/data
-      - ./backup.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-data:/var/lib/postgresql
     networks:
       - amigate-net
 
 networks:
   amigate-net:
     driver: bridge
-  # internal-network:
-  #   external: true
-  # proxy-network:
-  #   external: true
+  internal-network:
+    external: true
+  proxy-network:
+    external: true
 
 volumes:
   db-data:
