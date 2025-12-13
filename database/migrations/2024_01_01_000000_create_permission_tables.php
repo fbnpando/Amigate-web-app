@@ -84,7 +84,7 @@ return new class extends Migration
             $table->unsignedBigInteger($pivotPermission);
 
             $table->string('model_type');
-            $table->unsignedBigInteger($modelMorphKey);
+            $table->uuid($modelMorphKey);
 
             $table->index(
                 [$modelMorphKey, 'model_type'],
@@ -136,7 +136,7 @@ return new class extends Migration
             $table->unsignedBigInteger($pivotRole);
 
             $table->string('model_type');
-            $table->unsignedBigInteger($modelMorphKey);
+            $table->uuid($modelMorphKey);
 
             $table->index(
                 [$modelMorphKey, 'model_type'],
