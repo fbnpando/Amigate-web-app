@@ -35,6 +35,7 @@
             overflow-x: hidden;
             width: 100%;
             max-width: 100%;
+            font-size: 90%; /* Efecto de "Zoom Out" para toda la app */
         }
         
         body {
@@ -250,6 +251,28 @@
         .card:hover {
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             transform: translateY(-1px);
+        }
+        
+        /* Sidebar Compacto */
+        .sidebar {
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+        }
+        .sidebar-brand {
+            padding: 10px 20px !important;
+            margin-bottom: 10px !important;
+        }
+        .sidebar .nav-link {
+            padding: 8px 15px !important;
+            font-size: 0.95rem !important;
+        }
+        .sidebar-heading {
+            padding: 5px 15px !important;
+            font-size: 0.75rem !important;
+            margin-top: 10px !important;
+        }
+        hr.sidebar-divider {
+            margin: 10px 0 !important;
         }
         
         .card-header {
@@ -716,6 +739,12 @@
                         <a class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}" href="{{ route('reportes.index') }}">
                             <i class="bi bi-file-earmark-text"></i>
                             <span>Reportes</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('estadisticas.*') ? 'active' : '' }}" href="{{ route('estadisticas.index') }}">
+                            <i class="bi bi-graph-up"></i>
+                            <span>Estadísticas</span>
                         </a>
                     </li>
                     <li class="nav-item">

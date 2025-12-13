@@ -90,7 +90,7 @@ Route::get('/', function () {
     });
 
     
-    Route::prefix('reportes-estadisticos')->name('reportes.')->middleware(['auth', 'role:administrador|editor'])->group(function () {
+    Route::prefix('reportes-estadisticos')->name('estadisticas.')->middleware(['auth', 'role:administrador|editor'])->group(function () {
         Route::get('/', [App\Http\Controllers\ReporteEstadisticoController::class, 'index'])->name('index');
         Route::get('/eficacia', [App\Http\Controllers\ReporteEstadisticoController::class, 'eficaciaCuadrante'])->name('eficacia');
         Route::get('/usuarios', [App\Http\Controllers\ReporteEstadisticoController::class, 'topUsuarios'])->name('usuarios');
@@ -106,15 +106,7 @@ Route::get('/', function () {
 
     
     Route::prefix('cuadrantes')->name('cuadrantes.')->middleware(['role:administrador|editor'])->group(function () {
-        Route::get('/', function () {
-            $cuadrantes = \App\Models\Cuadrante::withCount('reportes')
-                ->with('grupos')
-                ->orderBy('fila')
-                ->orderBy('columna')
-                ->get();
-            $grupos = \App\Models\Grupo::count();
-            return view('cuadrantes.index', compact('cuadrantes', 'grupos'));
-        })->name('index');
+        Route::get('/', [\App\Http\Controllers\Web\CuadranteWebController::class, 'index'])->name('index');
         
         Route::post('/', [\App\Http\Controllers\Web\CuadranteWebController::class, 'store'])->name('store');
     });

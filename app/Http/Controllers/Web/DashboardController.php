@@ -27,6 +27,13 @@ class DashboardController extends Controller
         $reportesAlta = Reporte::where('prioridad', 'alta')->count();
         $reportesUrgente = Reporte::where('prioridad', 'urgente')->count();
         
+        // Stats para Centro de Operaciones
+        $reportesHoy = Reporte::whereDate('created_at', \Carbon\Carbon::today())->count();
+        
+        $zonaCritica = \App\Models\Cuadrante::withCount(['reportes' => function($q) {
+            $q->where('estado', 'activo');
+        }])->orderBy('reportes_count', 'desc')->first();
+        
         
         $ultimosReportes = Reporte::with(['usuario', 'categoria', 'cuadrante'])
             ->orderBy('created_at', 'desc')
@@ -57,7 +64,9 @@ class DashboardController extends Controller
             'reportesUrgente',
             'ultimosReportes',
             'nuevosUsuarios',
-            'categoriasPopulares'
+            'categoriasPopulares',
+            'reportesHoy',
+            'zonaCritica'
         ));
     }
 }

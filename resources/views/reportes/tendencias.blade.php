@@ -10,7 +10,7 @@
         <div class="card-body">
             <div class="row align-items-end g-3">
                 <div class="col-lg-8">
-                    <form action="{{ route('reportes.tendencias') }}" method="GET" class="row g-3 align-items-end">
+                    <form action="{{ route('estadisticas.tendencias') }}" method="GET" class="row g-3 align-items-end">
                         <div class="col-md-4">
                             <label class="form-label text-muted small fw-bold">Año de Análisis</label>
                             <input type="number" name="year" value="{{ $year }}" min="2020" max="{{ date('Y') }}" class="form-control">
@@ -24,10 +24,10 @@
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <div class="btn-group" role="group">
-                        <a href="{{ route('reportes.exportar.pdf', ['reporte' => 'tendencias']) }}" class="btn btn-danger text-white">
+                        <a href="{{ route('estadisticas.exportar.pdf', ['reporte' => 'tendencias']) }}" class="btn btn-danger text-white">
                             <i class="bi bi-file-earmark-pdf me-2"></i>PDF
                         </a>
-                        <a href="{{ route('reportes.exportar.excel', ['reporte' => 'tendencias']) }}" class="btn btn-success text-white">
+                        <a href="{{ route('estadisticas.exportar.excel', ['reporte' => 'tendencias']) }}" class="btn btn-success text-white">
                             <i class="bi bi-file-earmark-excel me-2"></i>Excel
                         </a>
                     </div>

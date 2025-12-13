@@ -10,9 +10,22 @@ class CuadranteWebController extends Controller
 {
     public function index()
     {
-        $cuadrantes = Cuadrante::orderBy('fila')->orderBy('columna')->paginate(20);
+        $cuadrantes = Cuadrante::withCount('reportes')
+            ->with('grupos')
+            ->orderBy('fila')
+            ->orderBy('columna')
+            ->get();
+            
+        $grupos = \App\Models\Grupo::count();
+
+        // Obtener reportes activos con ubicación para el mapa
+        // Obtener TODOS los reportes con ubicación para el mapa "Amber Alert"
+        $reportes = \App\Models\Reporte::with(['categoria', 'imagenes', 'respuestas'])
+            ->whereNotNull('ubicacion_exacta_lat')
+            ->whereNotNull('ubicacion_exacta_lng')
+            ->get(); // Traemos todos los atributos para el detalle completo
         
-        return view('cuadrantes.index', compact('cuadrantes'));
+        return view('cuadrantes.index', compact('cuadrantes', 'grupos', 'reportes'));
     }
 
     public function create()

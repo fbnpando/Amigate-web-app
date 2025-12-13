@@ -14,11 +14,27 @@ use Illuminate\Http\Request;
 
 class ReporteWebController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $reportes = Reporte::with(['usuario', 'categoria', 'cuadrante'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Reporte::with(['usuario', 'categoria', 'cuadrante']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('titulo', 'like', "%{$search}%")
+                  ->orWhere('descripcion', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo_reporte', $request->tipo);
+        }
+
+        $reportes = $query->orderBy('created_at', 'desc')->paginate(10);
         
         $categorias = Categoria::where('activo', true)->get();
         
@@ -61,13 +77,81 @@ class ReporteWebController extends Controller
 
     public function show(string $id)
     {
-        $reporte = Reporte::with(['usuario', 'categoria', 'cuadrante', 'respuestas'])
+        $reporte = Reporte::with(['usuario', 'categoria', 'cuadrante', 'respuestas.usuario', 'expansiones'])
             ->findOrFail($id);
         
-        
         $reporte->increment('vistas');
+
+        // Construir Cronograma
+        $timeline = collect();
+
+        // 1. Evento de inicio (Reporte Creado)
+        $timeline->push([
+            'tipo' => 'inicio',
+            'fecha' => $reporte->created_at,
+            'titulo' => 'Reporte Creado',
+            'descripcion' => 'El reporte fue publicado inicialmente.',
+            'icono' => 'bi-flag',
+            'color' => 'primary',
+            'usuario' => $reporte->usuario
+        ]);
+
+        // 2. Fecha de pérdida (si es diferente a la de reporte y existe)
+        if ($reporte->fecha_perdida && $reporte->fecha_perdida->diffInMinutes($reporte->created_at) > 60) {
+             $timeline->push([
+                'tipo' => 'perdida',
+                'fecha' => $reporte->fecha_perdida,
+                'titulo' => 'Fecha del Incidente',
+                'descripcion' => 'Momento aproximado en que ocurrió el incidente.',
+                'icono' => 'bi-calendar-event',
+                'color' => 'warning',
+                'usuario' => null
+            ]);
+        }
+
+        // 3. Respuestas / Avistamientos
+        foreach ($reporte->respuestas as $respuesta) {
+            $timeline->push([
+                'tipo' => 'respuesta',
+                'fecha' => $respuesta->created_at,
+                'titulo' => 'Respuesta Recibida', // Podría ser "Avistamiento" si es de ese tipo
+                'descripcion' => $respuesta->mensaje,
+                'icono' => 'bi-chat-dots',
+                'color' => 'info',
+                'usuario' => $respuesta->usuario
+            ]);
+        }
+
+        // 4. Expansiones de búsqueda
+        foreach ($reporte->expansiones as $expansion) {
+            $timeline->push([
+                'tipo' => 'expansion',
+                'fecha' => $expansion->created_at ?? $reporte->updated_at, // Fallback si no tiene created_at
+                'titulo' => 'Expansión de Búsqueda (Nivel ' . $expansion->nivel . ')',
+                'descripcion' => 'El área de búsqueda se ha expandido a nuevos cuadrantes.',
+                'icono' => 'bi-arrows-expand',
+                'color' => 'secondary',
+                'usuario' => null
+            ]);
+        }
+
+        // 5. Resolución (si está resuelto)
+        if ($reporte->estado === 'resuelto') {
+            $timeline->push([
+                'tipo' => 'resolucion',
+                'fecha' => $reporte->updated_at,
+                'titulo' => 'Caso Resuelto',
+                'descripcion' => 'El reporte ha sido marcado como resuelto.',
+                'icono' => 'bi-check-circle-fill',
+                'color' => 'success',
+                'usuario' => null // O el usuario que lo cerró si guardáramos eso
+            ]);
+        }
+
+        // Ordenar por fecha cronológicamente
+        $timeline = $timeline->sortBy('fecha');
         
-        return view('reportes.show', compact('reporte'));
+        return view('reportes.show', compact('reporte', 'timeline'));
     }
 
     public function edit(string $id)

@@ -14,7 +14,7 @@ class ReporteEstadisticoController extends Controller
 {
     public function index()
     {
-        return view('reportes.index');
+        return view('reportes.estadisticas');
     }
 
     

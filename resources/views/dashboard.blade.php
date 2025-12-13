@@ -199,9 +199,15 @@
         transform: scale(1.02);
     }
     
-    /* Pulse animation desactivada para mejor rendimiento */
+    /* Animación de Pulso para Alertas */
+    @keyframes pulse-border {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+        70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    
     .pulse-animation {
-        animation: none;
+        animation: pulse-border 2s infinite;
     }
     
     .fade-in {
@@ -580,105 +586,84 @@
 
 
 <div class="row g-4 mb-4">
+    <!-- Card URGENTE (Prioridad Máxima) -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card primary">
-            <div class="stat-icon primary">
-                <i class="bi bi-file-earmark-text"></i>
+        <div class="stat-card danger {{ $reportesUrgente > 0 ? 'pulse-animation' : '' }}" style="{{ $reportesUrgente > 0 ? 'border: 2px solid #ef4444;' : '' }}">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label text-danger mb-1">ALERTAS URGENTES</div>
+                    <div class="stat-value text-danger" style="font-size: 3.5rem;">{{ $reportesUrgente }}</div>
+                </div>
+                <div class="stat-icon danger">
+                    <i class="bi bi-megaphone-fill"></i>
+                </div>
             </div>
-            <div class="stat-label">Total Reportes</div>
-            <div class="stat-value">{{ number_format($totalReportes ?? 0, 0, ',', '.') }}</div>
-            <div class="stat-change text-success">
-                <i class="bi bi-arrow-up-circle-fill"></i>
-                <span>{{ $reportesActivos ?? 0 }} activos</span>
+            <div class="stat-change text-danger fw-bold">
+                <i class="bi bi-exclamation-circle-fill me-1"></i>
+                ACCIÓN INMEDIATA REQUERIDA
             </div>
         </div>
     </div>
     
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card success">
-            <div class="stat-icon success">
-                <i class="bi bi-people"></i>
-            </div>
-            <div class="stat-label">Total Usuarios</div>
-            <div class="stat-value">{{ number_format($totalUsuarios ?? 0, 0, ',', '.') }}</div>
-            <div class="stat-change text-success">
-                <i class="bi bi-check-circle-fill"></i>
-                <span>Sistema operativo</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card warning">
-            <div class="stat-icon warning">
-                <i class="bi bi-exclamation-triangle"></i>
-            </div>
-            <div class="stat-label">Reportes Activos</div>
-            <div class="stat-value">{{ number_format($reportesActivos ?? 0, 0, ',', '.') }}</div>
-            <div class="stat-change text-warning">
-                <i class="bi bi-clock-fill"></i>
-                <span>Requieren atención</span>
-            </div>
-        </div>
-    </div>
-    
+    <!-- Card ZONA CRÍTICA (Donde hay más casos) -->
     <div class="col-xl-3 col-md-6">
         <div class="stat-card info">
-            <div class="stat-icon info">
-                <i class="bi bi-check-circle"></i>
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label text-info mb-1">ZONA CRÍTICA</div>
+                    <div class="stat-value text-dark" style="font-size: 1.8rem;">
+                        {{ $zonaCritica ? Str::limit($zonaCritica->nombre, 12) : 'N/A' }}
+                    </div>
+                </div>
+                <div class="stat-icon info">
+                    <i class="bi bi-map-fill"></i>
+                </div>
             </div>
-            <div class="stat-label">Resueltos</div>
-            <div class="stat-value">{{ number_format($reportesResueltos ?? 0, 0, ',', '.') }}</div>
-            <div class="stat-change text-info">
-                <i class="bi bi-percent"></i>
-                <span>{{ $totalReportes > 0 ? round(($reportesResueltos / $totalReportes) * 100, 1) : 0 }}% tasa de éxito</span>
+            <div class="stat-change text-muted">
+                {{ $zonaCritica ? $zonaCritica->reportes_count . ' casos activos' : 'Sin datos' }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Card NUEVOS HOY (Flujo diario) -->
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card primary">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label text-primary mb-1">NUEVOS HOY</div>
+                    <div class="stat-value text-dark">{{ $reportesHoy }}</div>
+                </div>
+                <div class="stat-icon primary">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+            </div>
+            <div class="stat-change text-muted">
+                Registrados las últimas 24h
+            </div>
+        </div>
+    </div>
+    
+    <!-- Card TOTAL ACTIVOS (Carga de trabajo) -->
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card warning">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label text-warning mb-1">TOTAL ACTIVOS</div>
+                    <div class="stat-value text-dark">{{ number_format($reportesActivos ?? 0, 0, ',', '.') }}</div>
+                </div>
+                <div class="stat-icon warning">
+                    <i class="bi bi-collection-fill"></i>
+                </div>
+            </div>
+            <div class="stat-change text-muted">
+                Casos pendientes de resolución
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="mini-stat-card danger">
-            <div class="mb-3">
-                <i class="bi bi-x-circle fs-1 text-danger"></i>
-            </div>
-            <h3 class="mb-1 fw-bold text-danger">{{ number_format($reportesPerdidos ?? 0, 0, ',', '.') }}</h3>
-            <small class="text-muted fw-semibold">Reportes Perdidos</small>
-        </div>
-    </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="mini-stat-card success">
-            <div class="mb-3">
-                <i class="bi bi-check-circle fs-1 text-success"></i>
-            </div>
-            <h3 class="mb-1 fw-bold text-success">{{ number_format($reportesEncontrados ?? 0, 0, ',', '.') }}</h3>
-            <small class="text-muted fw-semibold">Reportes Encontrados</small>
-        </div>
-    </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="mini-stat-card danger">
-            <div class="mb-3">
-                <i class="bi bi-exclamation-triangle-fill fs-1 text-danger pulse-animation"></i>
-            </div>
-            <h3 class="mb-1 fw-bold text-danger">{{ number_format($reportesUrgente ?? 0, 0, ',', '.') }}</h3>
-            <small class="text-muted fw-semibold">Urgentes</small>
-        </div>
-    </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="mini-stat-card info">
-            <div class="mb-3">
-                <i class="bi bi-bar-chart fs-1 text-info"></i>
-            </div>
-            <h3 class="mb-1 fw-bold text-info">{{ number_format($reportesAlta ?? 0, 0, ',', '.') }}</h3>
-            <small class="text-muted fw-semibold">Prioridad Alta</small>
-        </div>
-    </div>
-</div>
+
 
 
 <div class="row g-4 mb-4">
@@ -1028,5 +1013,10 @@
             }
         });
     }
+
+    // Auto-refresh for Operations Center Mode (30s)
+    setTimeout(function() {
+        window.location.reload();
+    }, 30000);
 </script>
 @endpush

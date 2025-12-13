@@ -79,10 +79,7 @@ class RolePermissionSeeder extends Seeder
         
         $userRole = Role::create(['name' => 'usuario']);
         $userRole->givePermissionTo([
-            'ver reportes',
-            'crear reportes',
-            'ver categorias',
-            'ver grupos',
+           
         ]);
 
         

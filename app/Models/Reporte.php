@@ -305,4 +305,15 @@ class Reporte extends Model
         }
         return null;
     }
+
+    public function getCuadranteSugeridoAttribute()
+    {
+        if (!$this->ubicacion_exacta_lat || !$this->ubicacion_exacta_lng) return null;
+        
+        return Cuadrante::where('lat_min', '<=', $this->ubicacion_exacta_lat)
+            ->where('lat_max', '>=', $this->ubicacion_exacta_lat)
+            ->where('lng_min', '<=', $this->ubicacion_exacta_lng)
+            ->where('lng_max', '>=', $this->ubicacion_exacta_lng)
+            ->first();
+    }
 }

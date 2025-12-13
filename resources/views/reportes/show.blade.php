@@ -47,7 +47,15 @@
                         </div>
                         <div class="mb-3">
                             <label class="text-muted small">Cuadrante</label>
-                            <p class="fw-bold">{{ $reporte->cuadrante->codigo }} - {{ $reporte->cuadrante->nombre }}</p>
+                            <p class="fw-bold mb-0">
+                                {{ $reporte->cuadrante->codigo }} - {{ $reporte->cuadrante->nombre }}
+                            </p>
+                            @if($reporte->cuadrante_sugerido && $reporte->cuadrante_sugerido->id !== $reporte->cuadrante->id)
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> Ubicación Real: 
+                                    <strong>{{ $reporte->cuadrante_sugerido->codigo }}</strong>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -131,35 +139,54 @@
                 </div>
                 @endif
 
-                
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h3 class="text-primary"><i class="bi bi-eye"></i> {{ $reporte->vistas }}</h3>
-                                <p class="mb-0 text-muted">Vistas</p>
+                </div>
+
+                <hr>
+
+                <!-- Cronograma de Actividad -->
+                <div class="mb-4">
+                    <h5 class="mb-4"><i class="bi bi-hourglass-split me-2"></i>Cronograma de Actividad</h5>
+                    
+                    <div class="timeline position-relative">
+                        @foreach($timeline as $evento)
+                        <div class="timeline-item mb-4 position-relative ps-4 border-start border-2 border-{{ $evento['color'] }}">
+                            <div class="position-absolute top-0 start-0 translate-middle rounded-circle bg-white border border-{{ $evento['color'] }} d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <i class="bi {{ $evento['icono'] }} text-{{ $evento['color'] }}"></i>
+                            </div>
+                            <div class="card border-{{ $evento['color'] }} shadow-sm">
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h6 class="card-title text-{{ $evento['color'] }} mb-0 fw-bold">{{ $evento['titulo'] }}</h6>
+                                        <small class="text-muted" title="{{ $evento['fecha']->format('d/m/Y H:i:s') }}">
+                                            {{ $evento['fecha']->diffForHumans() }}
+                                        </small>
+                                    </div>
+                                    <p class="card-text small mb-1">{{ $evento['descripcion'] }}</p>
+                                    @if($evento['usuario'])
+                                        <footer class="blockquote-footer mt-1 mb-0 small">
+                                            Por: {{ $evento['usuario']->nombre }}
+                                        </footer>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h3 class="text-success"><i class="bi bi-chat"></i> {{ $reporte->respuestas_count }}</h3>
-                                <p class="mb-0 text-muted">Respuestas</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h3 class="text-info"><i class="bi bi-calendar"></i> {{ $reporte->created_at->diffForHumans() }}</h3>
-                                <p class="mb-0 text-muted">Publicado</p>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.timeline-item:last-child {
+    border-left: 0 !important;
+    padding-left: 1.6rem !important; /* Ajuste para mantener alineación visual */
+}
+/* Asegurar que la línea conectora se vea bien */
+.timeline-item {
+    margin-left: 16px;
+}
+</style>
 @endsection
