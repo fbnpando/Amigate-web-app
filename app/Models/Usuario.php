@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
-    use HasFactory, HasUuids, HasRoles;
+    use HasFactory, HasUuids, HasRoles, Notifiable;
 
-    protected $guard_name = 'web';
+    public $guard_name = 'web';
 
     protected $table = 'usuarios';
 
@@ -23,6 +24,10 @@ class Usuario extends Model
         'avatar_url',
         'puntos_ayuda',
         'activo',
+        'contrasena',
+        'rol',
+        'ubicacion_actual_lat',
+        'ubicacion_actual_lng'
     ];
 
     protected $casts = [
@@ -37,6 +42,16 @@ class Usuario extends Model
         'activo' => true,
         'puntos_ayuda' => 0,
     ];
+
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->contrasena;
+    }
 
     
     

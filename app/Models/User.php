@@ -14,6 +14,8 @@ class User extends Authenticatable
     
     use HasFactory, Notifiable, HasRoles;
 
+    public $guard_name = 'web';
+
     
     protected $keyType = 'string';
     
