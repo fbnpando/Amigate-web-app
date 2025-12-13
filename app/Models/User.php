@@ -17,14 +17,6 @@ class User extends Authenticatable
     public $guard_name = 'web';
 
     
-    protected $keyType = 'string';
-    
-    public function getKey()
-    {
-        return (string) parent::getKey();
-    }
-
-    
     protected $fillable = [
         'name',
         'email',
