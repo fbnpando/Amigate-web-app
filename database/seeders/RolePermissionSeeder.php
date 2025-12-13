@@ -24,44 +24,44 @@ class RolePermissionSeeder extends Seeder
         
         
         
-        Permission::create(['name' => 'ver usuarios']);
-        Permission::create(['name' => 'crear usuarios']);
-        Permission::create(['name' => 'editar usuarios']);
-        Permission::create(['name' => 'eliminar usuarios']);
+        Permission::firstOrCreate(['name' => 'ver usuarios']);
+        Permission::firstOrCreate(['name' => 'crear usuarios']);
+        Permission::firstOrCreate(['name' => 'editar usuarios']);
+        Permission::firstOrCreate(['name' => 'eliminar usuarios']);
 
         
-        Permission::create(['name' => 'ver reportes']);
-        Permission::create(['name' => 'crear reportes']);
-        Permission::create(['name' => 'editar reportes']);
-        Permission::create(['name' => 'eliminar reportes']);
+        Permission::firstOrCreate(['name' => 'ver reportes']);
+        Permission::firstOrCreate(['name' => 'crear reportes']);
+        Permission::firstOrCreate(['name' => 'editar reportes']);
+        Permission::firstOrCreate(['name' => 'eliminar reportes']);
 
         
-        Permission::create(['name' => 'ver categorias']);
-        Permission::create(['name' => 'crear categorias']);
-        Permission::create(['name' => 'editar categorias']);
-        Permission::create(['name' => 'eliminar categorias']);
+        Permission::firstOrCreate(['name' => 'ver categorias']);
+        Permission::firstOrCreate(['name' => 'crear categorias']);
+        Permission::firstOrCreate(['name' => 'editar categorias']);
+        Permission::firstOrCreate(['name' => 'eliminar categorias']);
 
         
-        Permission::create(['name' => 'ver grupos']);
-        Permission::create(['name' => 'crear grupos']);
-        Permission::create(['name' => 'editar grupos']);
-        Permission::create(['name' => 'eliminar grupos']);
+        Permission::firstOrCreate(['name' => 'ver grupos']);
+        Permission::firstOrCreate(['name' => 'crear grupos']);
+        Permission::firstOrCreate(['name' => 'editar grupos']);
+        Permission::firstOrCreate(['name' => 'eliminar grupos']);
 
         
-        Permission::create(['name' => 'administrar sistema']);
-        Permission::create(['name' => 'ver configuracion']);
-        Permission::create(['name' => 'editar configuracion']);
+        Permission::firstOrCreate(['name' => 'administrar sistema']);
+        Permission::firstOrCreate(['name' => 'ver configuracion']);
+        Permission::firstOrCreate(['name' => 'editar configuracion']);
 
         
         
         
 
         
-        $adminRole = Role::create(['name' => 'administrador']);
+        $adminRole = Role::firstOrCreate(['name' => 'administrador']);
         $adminRole->givePermissionTo(Permission::all());
 
         
-        $editorRole = Role::create(['name' => 'editor']);
+        $editorRole = Role::firstOrCreate(['name' => 'editor']);
         $editorRole->givePermissionTo([
             'ver reportes',
             'crear reportes',
@@ -77,7 +77,7 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         
-        $userRole = Role::create(['name' => 'usuario']);
+        $userRole = Role::firstOrCreate(['name' => 'usuario']);
         $userRole->givePermissionTo([
            
         ]);
