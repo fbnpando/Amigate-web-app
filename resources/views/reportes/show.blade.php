@@ -357,11 +357,11 @@
                     <div class="timeline-container">
                         <div class="timeline-enhanced">
                             @foreach($timeline as $evento)
-                            <div class="mb-3 position-relative timeline-item-wrapper">
+                            <div class="mb-3 position-relative timeline-item-wrapper" style="min-height: 40px;"> <!-- Ensure min-height -->
                                 <div class="timeline-node border-{{ $evento['color'] }} shadow-sm">
                                     <i class="bi {{ $evento['icono'] }} text-{{ $evento['color'] }}"></i>
                                 </div>
-                                <div class="ps-3 ms-2">
+                                <div class="ps-4 ms-3"> <!-- Increased spacing: ps-3 ms-2 -> ps-4 ms-3 -->
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <h6 class="fw-bold mb-0 text-dark small">{{ $evento['titulo'] }}</h6>
                                         <span class="text-muted" style="font-size: 0.7rem;">{{ $evento['fecha']->diffForHumans() }}</span>
