@@ -69,7 +69,7 @@
 
     /* Custom Scrollbar for Timeline */
     .timeline-container {
-        flex-grow: 1;
+        max-height: 500px;
         overflow-y: auto;
         padding-right: 10px;
         scrollbar-width: thin;
