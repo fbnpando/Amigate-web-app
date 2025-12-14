@@ -519,6 +519,13 @@
                                 <i class="bi bi-info-circle-fill"></i> Otros (<span id="countOtros">0</span>)
                             </label>
                         </div>
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="showResueltos" checked onchange="toggleLayer('resueltos')">
+                            <label class="form-check-label text-primary" for="showResueltos">
+                                <i class="bi bi-check-all"></i> Resueltos (<span id="countResueltos">0</span>)
+                            </label>
+                        </div>
                     </div>
                     
                     
@@ -593,13 +600,14 @@
     const capas = {
         perdidos: L.layerGroup(),
         encontrados: L.layerGroup(),
+        resueltos: L.layerGroup(),
         otros: L.layerGroup()
     };
     
     // Datos y Configuración
     const allReportes = {!! json_encode($reportes) !!};
     const totalGrupos = {{ $grupos ?? 0 }};
-    const counts = { perdidos: 0, encontrados: 0, otros: 0 };
+    const counts = { perdidos: 0, encontrados: 0, resueltos: 0, otros: 0 };
     const santaCruzBounds = {
         norte: -17.7000, sur: -17.8500, este: -63.1000, oeste: -63.2500
     };
@@ -644,6 +652,11 @@
                 className: 'custom-div-icon',
                 html: "<div class='marker-pulse marker-otro'></div>",
                 iconSize: [20, 20], iconAnchor: [10, 10]
+            }),
+            resuelto: L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div class='marker-pulse bg-primary'></div>",
+                iconSize: [20, 20], iconAnchor: [10, 10]
             })
         };
 
@@ -652,10 +665,16 @@
             const [lat, lng] = getValidLatLng(r.ubicacion_exacta_lat, r.ubicacion_exacta_lng);
             // Normalizar el tipo de reporte (quitar espacios y minúsculas)
             let type = (r.tipo_reporte || '').toString().trim().toLowerCase();
+            let state = (r.estado || '').toString().trim().toLowerCase();
             let layerKey = 'otros';
             let icon = icons.otro;
 
-            if (type === 'perdido') { layerKey = 'perdidos'; icon = icons.perdido; counts.perdidos++; }
+            if (state === 'resuelto') { 
+                layerKey = 'resueltos'; 
+                icon = icons.resuelto; 
+                counts.resueltos++; 
+            }
+            else if (type === 'perdido') { layerKey = 'perdidos'; icon = icons.perdido; counts.perdidos++; }
             else if (type === 'encontrado') { layerKey = 'encontrados'; icon = icons.encontrado; counts.encontrados++; }
             else { counts.otros++; }
 
@@ -691,15 +710,18 @@
                         const [rLat, rLng] = getValidLatLng(resp.ubicacion_lat, resp.ubicacion_lng);
                         puntos.push([rLat, rLng]);
 
-                        // Marcador de avistamiento (punto morado)
+                        // Marcador de avistamiento o encuentro
+                        let label = (resp.tipo_respuesta === 'encontrado') ? '¡Aquí fue encontrado!' : 'Avistamiento';
+                        let color = (resp.tipo_respuesta === 'encontrado') ? '#198754' : '#6f42c1';
+
                         L.circleMarker([rLat, rLng], {
-                            radius: 6,
-                            fillColor: '#6f42c1',
+                            radius: 8,
+                            fillColor: color,
                             color: '#fff',
                             weight: 2,
                             opacity: 1,
-                            fillOpacity: 0.8
-                        }).bindTooltip(`Avistamiento: ${new Date(resp.created_at).toLocaleDateString()}`).addTo(historyLayer);
+                            fillOpacity: 0.9
+                        }).bindTooltip(`${label}: ${new Date(resp.created_at).toLocaleDateString()}`).addTo(historyLayer);
                     }
                 });
 
@@ -768,6 +790,7 @@
     function updateCounters() {
         if(document.getElementById('countPerdidos')) document.getElementById('countPerdidos').textContent = counts.perdidos;
         if(document.getElementById('countEncontrados')) document.getElementById('countEncontrados').textContent = counts.encontrados;
+        if(document.getElementById('countResueltos')) document.getElementById('countResueltos').textContent = counts.resueltos;
         // Si agregamos 'otros' al HTML, actualizamos aquí
     }
 
