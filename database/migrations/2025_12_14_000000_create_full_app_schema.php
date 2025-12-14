@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -31,19 +30,6 @@ return new class extends Migration
             });
         }
 
-        // 1a. Users (Standard Laravel Table - seemingly used by Auth/Nova?)
-        if (!Schema::hasTable('users')) {
-            Schema::create('users', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->string('email')->unique();
-                $table->timestamp('email_verified_at')->nullable();
-                $table->string('password');
-                $table->rememberToken();
-                $table->timestamps();
-            });
-        }
-
         // 2. Password Reset Tokens
         if (!Schema::hasTable('password_reset_tokens')) {
             Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -57,7 +43,7 @@ return new class extends Migration
         if (!Schema::hasTable('sessions')) {
             Schema::create('sessions', function (Blueprint $table) {
                 $table->string('id')->primary();
-                $table->string('user_id')->nullable()->index(); // Changed to string/generic to support both UUID and Int IDs
+                $table->foreignUuid('user_id')->nullable()->index();
                 $table->string('ip_address', 45)->nullable();
                 $table->text('user_agent')->nullable();
                 $table->longText('payload');
@@ -82,27 +68,11 @@ return new class extends Migration
         if (!Schema::hasTable('cuadrantes')) {
             Schema::create('cuadrantes', function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->string('codigo');
-                $table->string('fila');
-                $table->integer('columna');
-                $table->string('nombre')->nullable();
-                $table->text('geometria')->nullable();
-                $table->text('centro')->nullable();
-                $table->decimal('lat_min', 10, 8);
-                $table->decimal('lat_max', 10, 8);
-                $table->decimal('lng_min', 11, 8);
-                $table->decimal('lng_max', 11, 8);
-                $table->string('ciudad')->nullable();
-                $table->string('zona')->nullable();
-                $table->json('barrios')->nullable();
+                $table->string('nombre');
+                $table->polygon('area_geografica')->nullable(); // Using polygon for geo area
                 $table->boolean('activo')->default(true);
-                $table->timestamp('created_at')->useCurrent();
-                $table->decimal('centro_lat', 10, 8)->nullable();
-                $table->decimal('centro_lng', 11, 8)->nullable();
-                // $table->timestamps(); // Removed to match backup order exactly (updated_at missing in backup)
+                $table->timestamps();
             });
-             // Add polygon column using raw SQL to bypass Blueprint limitation
-            DB::statement('ALTER TABLE cuadrantes ADD COLUMN area_geografica polygon');
         }
 
         // 6. Cuadrante Barrios
@@ -135,14 +105,13 @@ return new class extends Migration
         // 8. Grupo Miembros
         if (!Schema::hasTable('grupo_miembros')) {
             Schema::create('grupo_miembros', function (Blueprint $table) {
-                $table->uuid('id')->primary(); // Backup uses UUID
+                $table->id();
                 $table->foreignUuid('grupo_id')->constrained('grupos')->onDelete('cascade');
                 $table->foreignUuid('usuario_id')->constrained('usuarios')->onDelete('cascade');
                 $table->string('rol')->default('miembro'); // admin, moderador, miembro
                 $table->boolean('notificaciones_activas')->default(true);
                 $table->timestamp('joined_at')->useCurrent();
-                $table->timestamp('created_at')->useCurrent();
-                $table->timestamp('updated_at')->nullable();
+                $table->timestamps();
             });
         }
 
@@ -171,18 +140,17 @@ return new class extends Migration
                 $table->string('email_contacto')->nullable();
                 $table->decimal('recompensa', 10, 2)->nullable();
                 $table->integer('vistas')->default(0);
-                $table->timestamp('created_at')->nullable();
-                $table->timestamp('updated_at')->nullable();
+                $table->timestamps();
             });
         }
 
         // 10. Reporte Imagenes
         if (!Schema::hasTable('reporte_imagenes')) {
             Schema::create('reporte_imagenes', function (Blueprint $table) {
-                $table->id(); // Backup actually uses BIGINT sequence for this one (checked backup: CREATE SEQUENCE public.reporte_imagenes_id_seq)
+                $table->id();
                 $table->foreignUuid('reporte_id')->constrained('reportes')->onDelete('cascade');
-                $table->string('ruta'); // Backup uses 'ruta', not 'url'
-                $table->string('tipo')->nullable();
+                $table->string('url');
+                $table->boolean('es_principal')->default(false);
                 $table->timestamps();
             });
         }
@@ -193,47 +161,25 @@ return new class extends Migration
                 $table->uuid('id')->primary();
                 $table->foreignUuid('reporte_id')->constrained('reportes')->onDelete('cascade');
                 $table->foreignUuid('usuario_id')->constrained('usuarios')->onDelete('cascade');
-                $table->string('tipo_respuesta')->nullable(); // Backup uses 'tipo_respuesta'
-                $table->text('mensaje')->nullable();
-                $table->string('ubicacion')->nullable();
-                $table->string('direccion_referencia')->nullable();
-                $table->json('imagenes')->nullable();
-                $table->json('videos')->nullable();
-                $table->boolean('verificada')->default(false);
-                $table->boolean('util')->default(false);
-                $table->timestamp('created_at')->useCurrent();
-                $table->timestamp('updated_at')->nullable();
+                $table->text('contenido');
+                $table->string('tipo')->default('texto'); // texto, imagen, ubicacion
+                $table->decimal('ubicacion_lat', 10, 8)->nullable();
+                $table->decimal('ubicacion_lng', 11, 8)->nullable();
+                $table->boolean('es_solucion')->default(false);
+                $table->timestamps();
             });
         }
 
         // 12. Expansiones Reporte
         if (!Schema::hasTable('expansiones_reporte')) {
             Schema::create('expansiones_reporte', function (Blueprint $table) {
-                $table->uuid('id')->primary(); // Backup uses UUID
+                $table->id();
                 $table->foreignUuid('reporte_id')->constrained('reportes')->onDelete('cascade');
-                $table->uuid('cuadrante_original_id');
-                $table->uuid('cuadrante_expandido_id');
                 $table->integer('nivel');
                 $table->timestamp('fecha_expansion')->useCurrent();
-                $table->timestamp('created_at')->useCurrent();
-                $table->timestamp('updated_at')->nullable();
-            });
-        }
-
-        // 13. Notificaciones
-        if (!Schema::hasTable('notificaciones')) {
-            Schema::create('notificaciones', function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->foreignUuid('usuario_id')->constrained('usuarios')->onDelete('cascade');
-                $table->string('tipo');
-                $table->string('titulo');
-                $table->text('mensaje')->nullable(); // Backup has 'mensaje'
-                $table->json('datos')->nullable();
-                $table->boolean('leida')->default(false);
-                $table->boolean('enviada_push')->default(false);
-                $table->boolean('enviada_email')->default(false);
-                $table->timestamp('created_at')->useCurrent();
-                $table->timestamp('updated_at')->nullable();
+                $table->integer('usuarios_alcanzados')->default(0);
+                $table->decimal('radio_km', 8, 2)->default(1.0);
+                $table->timestamps();
             });
         }
 
