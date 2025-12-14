@@ -94,10 +94,14 @@ class RolePermissionSeeder extends Seeder
         }
 
         
-        $users = User::whereDoesntHave('roles')->get();
+        // Fix: Use PHP filtering because whereDoesntHave fails in Postgres causing "operator does not exist: bigint = character varying"
+        // This happens because model_has_roles.model_id is a string (for UUIDs) but users.id is an integer.
+        $users = User::all();
         foreach ($users as $user) {
-            $user->assignRole('usuario');
-            $this->command->info("Rol 'usuario' asignado a: {$user->email}");
+            if ($user->roles->isEmpty()) {
+                $user->assignRole('usuario');
+                $this->command->info("Rol 'usuario' asignado a: {$user->email}");
+            }
         }
 
         $this->command->info('✅ Roles y permisos creados exitosamente!');
