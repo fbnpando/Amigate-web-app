@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -69,10 +70,12 @@ return new class extends Migration
             Schema::create('cuadrantes', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre');
-                $table->specificType('area_geografica', 'polygon')->nullable(); // Using specificType for polygon
+                //$table->specificType('area_geografica', 'polygon')->nullable();
                 $table->boolean('activo')->default(true);
                 $table->timestamps();
             });
+             // Add polygon column using raw SQL to bypass Blueprint limitation
+            DB::statement('ALTER TABLE cuadrantes ADD COLUMN area_geografica polygon');
         }
 
         // 6. Cuadrante Barrios
