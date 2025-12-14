@@ -1,20 +1,25 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-class GrupoMiembro extends Model
+class GrupoMiembro extends Pivot
 {
     use HasUuids;
 
     protected $table = 'grupo_miembros';
+    protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
-    const UPDATED_AT = null;
+    public $timestamps = false;
 
     protected $fillable = [
-        'grupo_id', 'usuario_id', 'rol', 'notificaciones_activas'
+        'grupo_id',
+        'usuario_id',
+        'rol',
+        'notificaciones_activas',
+        'joined_at'
     ];
 
     protected $casts = [

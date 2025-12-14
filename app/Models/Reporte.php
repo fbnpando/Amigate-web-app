@@ -11,6 +11,9 @@ class Reporte extends Model
     use HasFactory, HasUuids;
 
     protected $table = 'reportes';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'usuario_id',
@@ -73,22 +76,24 @@ class Reporte extends Model
 
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class);
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     }
+
 
     public function categoria()
     {
-        return $this->belongsTo(Categoria::class);
+        return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
     public function cuadrante()
     {
-        return $this->belongsTo(Cuadrante::class);
+        return $this->belongsTo(Cuadrante::class, 'cuadrante_id');
     }
+
 
     public function respuestas()
     {
-        return $this->hasMany(Respuesta::class);
+        return $this->hasMany(Respuesta::class, 'reporte_id');
     }
 
     public function expansiones()
@@ -99,12 +104,12 @@ class Reporte extends Model
     
     public function imagenes()
     {
-        return $this->hasMany(ReporteImagen::class, 'reporte_id');
+        return $this->hasMany(ReporteImagen::class, 'reporte_id')->orderBy('orden');
     }
 
     public function videos()
     {
-        return $this->hasMany(ReporteVideo::class, 'reporte_id');
+        return $this->hasMany(ReporteVideo::class, 'reporte_id')->orderBy('orden');
     }
 
     public function caracteristicas()

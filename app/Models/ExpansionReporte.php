@@ -9,12 +9,17 @@ class ExpansionReporte extends Model
     use HasUuids;
 
     protected $table = 'expansiones_reporte';
+    protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
-    const UPDATED_AT = null;
+    public $timestamps = false;
 
     protected $fillable = [
-        'reporte_id', 'cuadrante_original_id', 'cuadrante_expandido_id', 'nivel'
+        'reporte_id',
+        'cuadrante_original_id',
+        'cuadrante_expandido_id',
+        'nivel',
+        'fecha_expansion'
     ];
 
     protected $casts = [

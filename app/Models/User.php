@@ -7,17 +7,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+
 
 class User extends Authenticatable
 {
     
-    use HasFactory, Notifiable, HasRoles, HasUuids;
-
-    public $guard_name = 'web';
+    use HasFactory, Notifiable, HasRoles;
 
     
     protected $keyType = 'string';
+    
+    public function getKey()
+    {
+        return (string) parent::getKey();
+    }
+
+    
     protected $fillable = [
         'name',
         'email',

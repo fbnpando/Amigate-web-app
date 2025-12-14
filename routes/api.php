@@ -2,13 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ApiAuthController;
-use App\Http\Controllers\CuadranteController;
-use App\Http\Controllers\GrupoController;
-use App\Http\Controllers\ReporteController;
-use App\Http\Controllers\RespuestaController;
-use App\Http\Controllers\NotificacionController;
-use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CuadranteController;
+use App\Http\Controllers\Api\GrupoController;
+use App\Http\Controllers\Api\ReporteController;
+use App\Http\Controllers\Api\RespuestaController;
+use App\Http\Controllers\Api\NotificacionController;
+use App\Http\Controllers\Api\CategoriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,12 +20,12 @@ use App\Http\Controllers\CategoriaController;
 // AUTENTICACIÓN
 // ============================================
 Route::prefix('auth')->group(function () {
-    Route::post('register', [ApiAuthController::class, 'register']);
-    Route::post('login', [ApiAuthController::class, 'login']);
-    Route::get('perfil/{usuarioId}', [ApiAuthController::class, 'perfil']);
-    Route::put('perfil/{usuarioId}', [ApiAuthController::class, 'actualizarPerfil']);
-    Route::put('ubicacion/{usuarioId}', [ApiAuthController::class, 'actualizarUbicacion']);
-    Route::put('notificaciones/{usuarioId}', [ApiAuthController::class, 'actualizarNotificaciones']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::get('perfil/{usuarioId}', [AuthController::class, 'perfil']);
+    Route::put('perfil/{usuarioId}', [AuthController::class, 'actualizarPerfil']);
+    Route::put('ubicacion/{usuarioId}', [AuthController::class, 'actualizarUbicacion']);
+    Route::put('notificaciones/{usuarioId}', [AuthController::class, 'actualizarNotificaciones']);
 });
 
 // ============================================

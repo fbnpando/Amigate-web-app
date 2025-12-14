@@ -11,7 +11,9 @@ class Cuadrante extends Model
     use HasFactory, HasUuids;
 
     protected $table = 'cuadrantes';
-
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
     public $timestamps = false; 
 
     protected $fillable = [
@@ -37,6 +39,8 @@ class Cuadrante extends Model
         'lat_max' => 'decimal:8',
         'lng_min' => 'decimal:8',
         'lng_max' => 'decimal:8',
+        'centro_lat' => 'decimal:8',
+        'centro_lng' => 'decimal:8',
         'barrios' => 'array',
         'activo' => 'boolean',
         'created_at' => 'datetime',
@@ -47,14 +51,18 @@ class Cuadrante extends Model
     ];
 
     
+    public function barrios()
+    {
+        return $this->hasMany(CuadranteBarrio::class, 'cuadrante_id');
+    }
     public function reportes()
     {
-        return $this->hasMany(Reporte::class);
+        return $this->hasMany(Reporte::class,'cuadrante_id');
     }
 
     public function grupos()
     {
-        return $this->hasMany(Grupo::class);
+        return $this->hasMany(Grupo::class,'cuadrante_id');
     }
 
     public function expansionesOriginales()

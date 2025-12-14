@@ -4,18 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 
 class Usuario extends Authenticatable
 {
     use HasFactory, HasUuids, HasRoles, Notifiable;
 
-    public $guard_name = 'web';
+    protected $guard_name = 'web';
 
     protected $table = 'usuarios';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'nombre',
@@ -24,14 +29,19 @@ class Usuario extends Authenticatable
         'avatar_url',
         'puntos_ayuda',
         'activo',
-        'contrasena',
-        'rol',
         'ubicacion_actual_lat',
-        'ubicacion_actual_lng'
+        'ubicacion_actual_lng',
+        'rol'
+    ];
+    
+    protected $hidden = [
+        'contrasena',
     ];
 
     protected $casts = [
         'activo' => 'boolean',
+        'ubicacion_actual_lat' => 'decimal:8',
+        'ubicacion_actual_lng' => 'decimal:8',
         'puntos_ayuda' => 'integer',
         'fecha_registro' => 'datetime',
         'created_at' => 'datetime',
@@ -43,62 +53,68 @@ class Usuario extends Authenticatable
         'puntos_ayuda' => 0,
     ];
 
-    /**
-     * Get the password for the user.
-     *
-     * @return string
-     */
-    public function getAuthPassword()
+    
+    
+        public function getAuthPassword()
     {
         return $this->contrasena;
     }
 
+    public function getAuthIdentifierName()
+    {
+        return 'email';
+    }
     
-    
-    
-
+    public function configuracionNotificaciones()
+    {
+        return $this->hasOne(ConfiguracionNotificacionesUsuario::class, 'usuario_id');
+    }
     
     public function reportes()
     {
-        return $this->hasMany(Reporte::class);
+        return $this->hasMany(Reporte::class, 'usuario_id');
     }
-
     
     public function respuestas()
     {
-        return $this->hasMany(Respuesta::class);
+        return $this->hasMany(Respuesta::class, 'usuario_id');
     }
 
+
     
-    public function notificaciones()
-    {
-        return $this->hasMany(Notificacion::class);
-    }
+    
 
     
     public function grupos()
     {
         return $this->belongsToMany(Grupo::class, 'grupo_miembros', 'usuario_id', 'grupo_id')
-            ->withPivot('rol', 'notificaciones_activas', 'joined_at');
+            ->withPivot('rol', 'notificaciones_activas', 'joined_at')
+            ->using(GrupoMiembro::class); 
+    }
+
+    public function grupoMiembros()
+    {
+        return $this->hasMany(GrupoMiembro::class, 'usuario_id');
+    }
+    
+    public function notificaciones()
+    {
+        return $this->hasMany(Notificacion::class, 'usuario_id');
     }
 
     
-    
-    
-
-    
-    /*
     protected static function boot()
     {
         parent::boot();
 
+        
         static::deleting(function ($usuario) {
-            // DB::table('configuracion_notificaciones_usuario')
-            //     ->where('usuario_id', $usuario->id)
-            //     ->delete();
+            
+            DB::table('configuracion_notificaciones_usuario')
+                ->where('usuario_id', $usuario->id)
+                ->delete();
         });
     }
-    */
 
     
     
