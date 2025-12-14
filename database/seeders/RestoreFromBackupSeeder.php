@@ -27,7 +27,6 @@ class RestoreFromBackupSeeder extends Seeder
         ]);
 
         // 2. Restore Grupos
-        // COPY public.grupos (id, cuadrante_id, nombre, descripcion, imagen_url, publico, requiere_aprobacion, miembros_count, reportes_activos_count, reportes_resueltos_count, created_at, updated_at) FROM stdin;
         $this->restoreTableFromCopy($content, 'grupos', [
             'id', 'cuadrante_id', 'nombre', 'descripcion', 'imagen_url', 'publico', 
             'requiere_aprobacion', 'miembros_count', 'reportes_activos_count', 
@@ -35,7 +34,6 @@ class RestoreFromBackupSeeder extends Seeder
         ]);
 
         // 3. Restore Categorias
-        // COPY public.categorias (id, nombre, icono, color, descripcion, activo, created_at, updated_at) FROM stdin;
         $this->restoreTableFromCopy($content, 'categorias', [
             'id', 'nombre', 'icono', 'color', 'descripcion', 'activo', 'created_at', 'updated_at'
         ]);
