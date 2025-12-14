@@ -36,7 +36,7 @@ services:
       - internal-network
       - proxy-network
   db:
-    image: postgres:latest
+    image: postgis/postgis:16-3.4
     container_name: amigate-db
     restart: unless-stopped
     environment:
