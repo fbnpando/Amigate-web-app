@@ -548,14 +548,14 @@
 
 @section('content')
 
-<div class="dashboard-header">
+<div class="dashboard-header" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); padding: 25px; border-radius: 16px; color: white; margin-bottom: 25px;">
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <h1 class="mb-1">
+            <h1 class="mb-1" style="font-size: 1.75rem; font-weight: 700;">
                 <i class="bi bi-speedometer2 me-2"></i>
                 Dashboard
             </h1>
-            <p>
+            <p class="mb-0" style="font-size: 0.95rem; opacity: 0.9;">
                 <i class="bi bi-calendar3 me-1"></i>
                 {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM, YYYY') }} • {{ now()->format('H:i') }}
             </p>
