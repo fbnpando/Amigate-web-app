@@ -67,27 +67,56 @@
         box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
     }
 
+    /* Custom Scrollbar for Timeline */
+    .timeline-container {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 10px;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+    
+    .timeline-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .timeline-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .timeline-container::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 20px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+    }
+
+    .timeline-container::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
     .timeline-enhanced {
         position: relative;
-        padding-left: 3rem;
+        padding-left: 1.5rem; /* Reduced padding for tighter look */
+        padding-top: 0.5rem;
     }
 
     .timeline-enhanced::before {
         content: '';
         position: absolute;
-        left: 1.25rem;
-        top: 0;
+        left: 0.85rem; /* Adjusted for tighter layout */
+        top: 15px;
         bottom: 0;
         width: 2px;
-        background: #e2e8f0;
+        background: linear-gradient(to bottom, #cbd5e1 0%, rgba(203, 213, 225, 0.1) 100%); /* Fade out line */
     }
 
     .timeline-node {
         position: absolute;
         left: 0;
         top: 0;
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 28px; /* Slightly smaller nodes */
+        height: 28px;
         border-radius: 50%;
         background: white;
         border: 2px solid #e2e8f0;
@@ -95,19 +124,16 @@
         align-items: center;
         justify-content: center;
         z-index: 2;
+        font-size: 0.8rem; /* Smaller icon */
     }
-
-    .priority-badge {
-        padding: 0.5em 1em;
-        border-radius: 30px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+    
+    .timeline-item-content {
+        transition: background-color 0.2s;
+        border-left: 2px solid transparent; /* Highlight indicator placeholder */
     }
-
-    .img-carousel-container {
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    
+    .timeline-item-wrapper:hover .timeline-item-content {
+        background-color: #f8fafc;
     }
 </style>
 
@@ -319,36 +345,44 @@
             @endif
 
             <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-end">
                     <h5 class="fw-bold mb-0 text-primary">
                         <i class="bi bi-hourglass-split me-2"></i> Seguimiento
                     </h5>
+                    @if(count($timeline) > 5)
+                        <small class="text-muted" style="font-size: 0.75rem;">Desliza para ver más</small>
+                    @endif
                 </div>
                 <div class="card-body p-4">
-                    <div class="timeline-enhanced">
-                        @foreach($timeline as $evento)
-                        <div class="mb-4 position-relative">
-                            <div class="timeline-node border-{{ $evento['color'] }}">
-                                <i class="bi {{ $evento['icono'] }} text-{{ $evento['color'] }}"></i>
+                    <div class="timeline-container">
+                        <div class="timeline-enhanced">
+                            @foreach($timeline as $evento)
+                            <div class="mb-3 position-relative timeline-item-wrapper">
+                                <div class="timeline-node border-{{ $evento['color'] }} shadow-sm">
+                                    <i class="bi {{ $evento['icono'] }} text-{{ $evento['color'] }}"></i>
+                                </div>
+                                <div class="ps-3 ms-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h6 class="fw-bold mb-0 text-dark small">{{ $evento['titulo'] }}</h6>
+                                        <span class="text-muted" style="font-size: 0.7rem;">{{ $evento['fecha']->diffForHumans() }}</span>
+                                    </div>
+                                    <div class="timeline-item-content p-2 rounded bg-light border-start border-3 border-{{ $evento['color'] }}">
+                                        <p class="text-secondary small mb-1" style="line-height: 1.3;">
+                                            {{ $evento['descripcion'] }}
+                                        </p>
+                                        @if($evento['usuario'])
+                                            <div class="d-flex align-items-center mt-1">
+                                                <i class="bi bi-person-circle me-1 text-muted" style="font-size: 0.7rem;"></i>
+                                                <small class="text-muted fst-italic" style="font-size: 0.7rem;">
+                                                    {{ $evento['usuario']->nombre }}
+                                                </small>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                            <div class="ps-2">
-                                <span class="badge bg-{{ $evento['color'] }}-subtle text-{{ $evento['color'] }} mb-1 border border-{{ $evento['color'] }}-subtle">
-                                    {{ $evento['fecha']->diffForHumans() }}
-                                </span>
-                                <h6 class="fw-bold mb-1 {{ $evento['color'] == 'danger' || $evento['color'] == 'success' ? 'text-'.$evento['color'] : 'text-dark' }}">
-                                    {{ $evento['titulo'] }}
-                                </h6>
-                                <p class="text-muted small mb-1 bg-light p-2 rounded border-start border-3 border-{{ $evento['color'] }}">
-                                    {{ $evento['descripcion'] }}
-                                </p>
-                                @if($evento['usuario'])
-                                    <small class="text-muted fst-italic ms-1" style="font-size: 0.75rem;">
-                                        <i class="bi bi-person me-1"></i> {{ $evento['usuario']->nombre }}
-                                    </small>
-                                @endif
-                            </div>
+                            @endforeach
                         </div>
-                        @endforeach
                     </div>
                 </div>
             </div>
