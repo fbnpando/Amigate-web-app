@@ -109,7 +109,11 @@
         position: relative;
         overflow: hidden;
         height: 100%;
+        min-height: 160px;
         border: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     
     .stat-card::before {
@@ -620,7 +624,7 @@
                     <div class="stat-label mb-2">
                         <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> ZONA CRÍTICA
                     </div>
-                    <div class="stat-value" style="font-size: 1.8rem;">
+                    <div class="stat-value" style="font-size: 1.5rem;">
                         {{ $zonaCritica ? Str::limit($zonaCritica->nombre, 15) : 'Sin alertas' }}
                     </div>
                     <div class="stat-change neutral">
