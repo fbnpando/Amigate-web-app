@@ -33,7 +33,8 @@ class Usuario extends Authenticatable
         'activo',
         'ubicacion_actual_lat',
         'ubicacion_actual_lng',
-        'rol'
+        'rol',
+        'contrasena'
     ];
     
     protected $hidden = [
