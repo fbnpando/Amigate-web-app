@@ -40,60 +40,42 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Dashboard Hero Header - Ultra Impactante */
+    /* Dashboard Hero Header */
     .dashboard-header {
-        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #7c3aed, #1e40af, #0f172a);
-        background-size: 400% 400%;
-        animation: aurora 15s ease infinite;
-        border-radius: 24px;
-        padding: 40px;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e40af 100%);
+        border-radius: 16px;
+        padding: 25px;
         color: white;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 10px 30px -10px rgba(30, 58, 138, 0.4);
     }
     
     .dashboard-header::before {
         content: '';
         position: absolute;
-        top: -50%;
-        right: -20%;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
-        border-radius: 50%;
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    .dashboard-header::after {
-        content: '';
-        position: absolute;
-        bottom: -30%;
-        left: -10%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 60%);
-        border-radius: 50%;
-        animation: float 8s ease-in-out infinite reverse;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100%;
+        background: radial-gradient(circle at right, rgba(255,255,255,0.1) 0%, transparent 70%);
     }
     
     .dashboard-header h1 {
-        font-size: 3rem;
-        font-weight: 800;
-        margin-bottom: 12px;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 8px;
         position: relative;
         z-index: 1;
-        text-shadow: 0 4px 30px rgba(0,0,0,0.3);
-        letter-spacing: -0.5px;
     }
     
     .dashboard-header p {
-        font-size: 1.15rem;
-        opacity: 0.95;
+        font-size: 0.95rem;
+        opacity: 0.9;
         position: relative;
         z-index: 1;
-        font-weight: 500;
+        margin-bottom: 0;
     }
     
     .dashboard-header .live-indicator {
@@ -120,13 +102,10 @@
     /* Stat Cards - Premium Design */
     .stat-card {
         background: #ffffff;
-        border-radius: 24px;
-        padding: 28px;
-        box-shadow: 
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06),
-            0 10px 40px -10px rgba(0, 0, 0, 0.1);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
         height: 100%;
@@ -139,8 +118,7 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        border-radius: 24px 24px 0 0;
+        height: 3px;
     }
     
     .stat-card.primary::before { background: linear-gradient(90deg, #2563eb, #7c3aed); }
@@ -150,10 +128,8 @@
     .stat-card.danger::before { background: linear-gradient(90deg, #ef4444, #f87171); }
     
     .stat-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 
-            0 25px 50px -12px rgba(0, 0, 0, 0.15),
-            0 0 0 1px rgba(37, 99, 235, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
     }
     
     .stat-card.primary:hover { box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.25); }
@@ -163,15 +139,13 @@
     .stat-card.danger:hover { box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.25); }
 
     .stat-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        position: relative;
-        overflow: hidden;
+        font-size: 1.5rem;
     }
     
     .stat-icon::after {
@@ -212,23 +186,18 @@
     }
     
     .stat-value {
-        font-size: 3rem;
-        font-weight: 800;
-        margin: 12px 0;
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: countUp 0.8s ease-out forwards;
-        letter-spacing: -1px;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 8px 0;
+        color: #1e293b;
     }
     
     .stat-label {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         color: #64748b;
-        font-weight: 700;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
     }
     
     .stat-change {
@@ -580,36 +549,21 @@
 @section('content')
 
 <div class="dashboard-header">
-    <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <div class="flex-grow-1" style="z-index: 2;">
-            <div class="d-flex align-items-center gap-3 mb-3">
-                <span class="live-indicator">
-                    <span class="live-dot"></span>
-                    EN VIVO
-                </span>
-                <span class="badge bg-white bg-opacity-20 text-white px-3 py-2 rounded-pill">
-                    <i class="bi bi-geo-alt-fill me-1"></i> Ciudad Activa
-                </span>
-            </div>
-            <h1>
-                <i class="bi bi-shield-check me-2"></i>
-                Centro de Operaciones
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="mb-1">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Dashboard
             </h1>
-            <p class="mb-0">
-                <i class="bi bi-calendar3 me-2"></i>
+            <p>
+                <i class="bi bi-calendar3 me-1"></i>
                 {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM, YYYY') }} • {{ now()->format('H:i') }}
             </p>
         </div>
-        <div class="text-end d-none d-lg-block" style="z-index: 2;">
-            <div class="d-flex flex-column align-items-end gap-2">
-                <div class="d-flex align-items-center gap-2 bg-white bg-opacity-10 rounded-pill px-4 py-2">
-                    <i class="bi bi-broadcast text-success fs-5"></i>
-                    <span class="fw-semibold">Sistema Activo</span>
-                </div>
-                <small class="text-white-50">
-                    <i class="bi bi-arrow-repeat me-1"></i> Auto-actualización: 30s
-                </small>
-            </div>
+        <div class="d-none d-md-block">
+            <span class="badge bg-white bg-opacity-20 text-white px-3 py-2 rounded-pill">
+                <i class="bi bi-broadcast me-1 text-success"></i> Sistema Activo
+            </span>
         </div>
     </div>
 </div>
