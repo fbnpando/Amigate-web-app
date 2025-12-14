@@ -707,10 +707,10 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h5 class="mb-1 fw-bold">
-                        <i class="bi bi-tags-fill text-primary me-2"></i>
-                        Categorías Más Frecuentes
+                        <i class="bi bi-bar-chart-fill text-warning me-2"></i>
+                        Ranking de Alertas
                     </h5>
-                    <p class="text-muted small mb-0">Distribución por tipo de incidencia</p>
+                    <p class="text-muted small mb-0">¿Qué se pierde más en la ciudad?</p>
                 </div>
             </div>
             <canvas id="categoriasChart" style="max-height: 300px;"></canvas>
