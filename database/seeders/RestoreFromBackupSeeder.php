@@ -43,18 +43,27 @@ class RestoreFromBackupSeeder extends Seeder
 
     private function restoreTableFromCopy(string $content, string $tableName, array $columns)
     {
-        // Regex to find the COPY block - flexible for line endings
-        $pattern = "/COPY public\.{$tableName} \((.*?)\) FROM stdin;[\r\n]+(.*?)[\r\n]+\\\./s";
-        
+        // Regex to find the COPY block - flexible for line endings and spacing
+        // Matches: COPY public.tablename (col1, col2) FROM stdin;
+        // Then captures the data block until \.
+        $pattern = "/COPY public\.{$tableName}\s*\((.*?)\)\s*FROM stdin;[\r\n]+(.*?)(?:[\r\n]+)\\\./s";
+
         if (preg_match($pattern, $content, $matches)) {
             $dataBlock = $matches[2];
-            $rows = explode("\n", $dataBlock);
+            $rows = preg_split("/\r\n|\n|\r/", $dataBlock);
             $count = 0;
 
+            $this->command->info("Found COPY block for {$tableName}. Processing " . count($rows) . " rows.");
+            
             foreach ($rows as $row) {
                 if (empty(trim($row))) continue;
 
                 $values = explode("\t", $row);
+                
+                if (count($values) !== count($columns)) {
+                    $this->command->warn("Row column count mismatch for {$tableName}. Expected " . count($columns) . ", got " . count($values));
+                    continue;
+                }
                 
                 $insertData = [];
                 foreach ($columns as $index => $column) {
@@ -71,10 +80,24 @@ class RestoreFromBackupSeeder extends Seeder
                 }
 
                 try {
-                    // Check if record exists to avoid duplicates
-                    if (!DB::table($tableName)->where('id', $insertData['id'])->exists()) {
-                        DB::table($tableName)->insert($insertData);
-                        $count++;
+                    $shouldInsert = true;
+
+                    // Check ID existence first
+                    if (DB::table($tableName)->where('id', $insertData['id'])->exists()) {
+                        $shouldInsert = false;
+                    }
+
+                    // For 'categorias', check 'nombre' unique constraint
+                    if ($shouldInsert && $tableName === 'categorias' && isset($insertData['nombre'])) {
+                        if (DB::table($tableName)->where('nombre', $insertData['nombre'])->exists()) {
+                            $shouldInsert = false;
+                            $this->command->warn("Skipping duplicate category name: " . $insertData['nombre']);
+                        }
+                    }
+
+                    if ($shouldInsert) {
+                         DB::table($tableName)->insert($insertData);
+                         $count++;
                     }
                 } catch (\Exception $e) {
                     $this->command->warn("Failed to insert row in {$tableName}: " . $e->getMessage());
@@ -82,7 +105,7 @@ class RestoreFromBackupSeeder extends Seeder
             }
             $this->command->info("Inserted {$count} rows into {$tableName}.");
         } else {
-            $this->command->warn("No COPY block found for table {$tableName} in backup.sql");
+            $this->command->warn("No COPY block found for table {$tableName} in backup.sql (Regex mismatch)");
         }
     }
 }
