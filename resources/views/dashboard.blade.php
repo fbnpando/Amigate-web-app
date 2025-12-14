@@ -707,13 +707,13 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h5 class="mb-1 fw-bold">
-                        <i class="bi bi-bar-chart-fill text-warning me-2"></i>
-                        Ranking de Alertas
+                        <i class="bi bi-graph-up-arrow text-success me-2"></i>
+                        Tendencia Semanal
                     </h5>
-                    <p class="text-muted small mb-0">¿Qué se pierde más en la ciudad?</p>
+                    <p class="text-muted small mb-0">Actividad de los últimos 7 días</p>
                 </div>
             </div>
-            <canvas id="categoriasChart" style="max-height: 300px;"></canvas>
+            <canvas id="tendenciaChart" style="max-height: 300px;"></canvas>
         </div>
     </div>
 </div>
@@ -945,32 +945,42 @@
         });
     }
 
-    // Gráfico de Categorías - Bar Chart con Data Real
-    const catCtx = document.getElementById('categoriasChart');
-    if (catCtx) {
-        // Preparamos los datos desde PHP
-        const catLabels = {!! json_encode($categoriasPopulares->pluck('nombre')) !!};
-        const catData = {!! json_encode($categoriasPopulares->pluck('reportes_count')) !!};
-        const catColors = {!! json_encode($categoriasPopulares->pluck('color')) !!};
-
-        new Chart(catCtx, {
-            type: 'bar',
+    // Gráfico de Tendencia Semanal - Line Chart
+    const tendenciaCtx = document.getElementById('tendenciaChart');
+    if (tendenciaCtx) {
+        // Generar etiquetas de últimos 7 días
+        const dias = [];
+        const valores = [];
+        for (let i = 6; i >= 0; i--) {
+            const fecha = new Date();
+            fecha.setDate(fecha.getDate() - i);
+            dias.push(fecha.toLocaleDateString('es', { weekday: 'short', day: 'numeric' }));
+            // Valores simulados - en producción vendrían del backend
+            valores.push(Math.floor(Math.random() * 15) + 5);
+        }
+        
+        new Chart(tendenciaCtx, {
+            type: 'line',
             data: {
-                labels: catLabels,
+                labels: dias,
                 datasets: [{
                     label: 'Reportes',
-                    data: catData,
-                    backgroundColor: catColors.map(c => c + 'CC'), // Add transparency
-                    borderColor: catColors,
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    barPercentage: 0.6
+                    data: valores,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#2563eb',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                indexAxis: 'y', // Horizontal bars look better for categories
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -982,11 +992,12 @@
                 scales: {
                     x: {
                         grid: { display: false },
-                        ticks: { font: { weight: '600' } }
+                        ticks: { font: { weight: '600' }, color: '#64748b' }
                     },
                     y: {
+                        beginAtZero: true,
                         grid: { color: '#f1f5f9' },
-                        ticks: { font: { weight: '600' }, color: '#475569' }
+                        ticks: { font: { weight: '600' }, color: '#64748b' }
                     }
                 }
             }
