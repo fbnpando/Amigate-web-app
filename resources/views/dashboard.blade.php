@@ -700,7 +700,7 @@
 
 <div class="row g-4">
     <!-- Actividad Reciente (Columna Principal) -->
-    <div class="col-xl-8">
+    <div class="col-12 col-xl-8">
         <div class="activity-card">
             <div class="card-header bg-white border-0 py-4 px-4">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -793,7 +793,7 @@
     </div>
     
     <!-- Columna Lateral (Usuarios y Categorías) -->
-    <div class="col-xl-4">
+    <div class="col-12 col-xl-4">
         <div class="row g-4">
             <!-- Nuevos Usuarios -->
             <div class="col-12">
@@ -874,6 +874,8 @@
         </div>
     </div>
 </div>
+
+@endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
