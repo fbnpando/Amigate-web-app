@@ -135,13 +135,14 @@ return new class extends Migration
         // 8. Grupo Miembros
         if (!Schema::hasTable('grupo_miembros')) {
             Schema::create('grupo_miembros', function (Blueprint $table) {
-                $table->id();
+                $table->uuid('id')->primary(); // Backup uses UUID
                 $table->foreignUuid('grupo_id')->constrained('grupos')->onDelete('cascade');
                 $table->foreignUuid('usuario_id')->constrained('usuarios')->onDelete('cascade');
                 $table->string('rol')->default('miembro'); // admin, moderador, miembro
                 $table->boolean('notificaciones_activas')->default(true);
                 $table->timestamp('joined_at')->useCurrent();
-                $table->timestamps();
+                $table->timestamp('created_at')->useCurrent();
+                $table->timestamp('updated_at')->nullable();
             });
         }
 
@@ -170,17 +171,18 @@ return new class extends Migration
                 $table->string('email_contacto')->nullable();
                 $table->decimal('recompensa', 10, 2)->nullable();
                 $table->integer('vistas')->default(0);
-                $table->timestamps();
+                $table->timestamp('created_at')->nullable();
+                $table->timestamp('updated_at')->nullable();
             });
         }
 
         // 10. Reporte Imagenes
         if (!Schema::hasTable('reporte_imagenes')) {
             Schema::create('reporte_imagenes', function (Blueprint $table) {
-                $table->id();
+                $table->id(); // Backup actually uses BIGINT sequence for this one (checked backup: CREATE SEQUENCE public.reporte_imagenes_id_seq)
                 $table->foreignUuid('reporte_id')->constrained('reportes')->onDelete('cascade');
-                $table->string('url');
-                $table->boolean('es_principal')->default(false);
+                $table->string('ruta'); // Backup uses 'ruta', not 'url'
+                $table->string('tipo')->nullable();
                 $table->timestamps();
             });
         }
@@ -191,27 +193,47 @@ return new class extends Migration
                 $table->uuid('id')->primary();
                 $table->foreignUuid('reporte_id')->constrained('reportes')->onDelete('cascade');
                 $table->foreignUuid('usuario_id')->constrained('usuarios')->onDelete('cascade');
-                $table->text('contenido');
-                $table->string('tipo')->default('texto'); // texto, imagen, ubicacion
-                $table->decimal('ubicacion_lat', 10, 8)->nullable();
-                $table->decimal('ubicacion_lng', 11, 8)->nullable();
-                $table->boolean('es_solucion')->default(false);
-                $table->timestamps();
+                $table->string('tipo_respuesta')->nullable(); // Backup uses 'tipo_respuesta'
+                $table->text('mensaje')->nullable();
+                $table->string('ubicacion')->nullable();
+                $table->string('direccion_referencia')->nullable();
+                $table->json('imagenes')->nullable();
+                $table->json('videos')->nullable();
+                $table->boolean('verificada')->default(false);
+                $table->boolean('util')->default(false);
+                $table->timestamp('created_at')->useCurrent();
+                $table->timestamp('updated_at')->nullable();
             });
         }
 
         // 12. Expansiones Reporte
         if (!Schema::hasTable('expansiones_reporte')) {
             Schema::create('expansiones_reporte', function (Blueprint $table) {
-                $table->id();
+                $table->uuid('id')->primary(); // Backup uses UUID
                 $table->foreignUuid('reporte_id')->constrained('reportes')->onDelete('cascade');
-                $table->uuid('cuadrante_original_id'); // Added missing column
-                $table->uuid('cuadrante_expandido_id'); // Added missing column
+                $table->uuid('cuadrante_original_id');
+                $table->uuid('cuadrante_expandido_id');
                 $table->integer('nivel');
                 $table->timestamp('fecha_expansion')->useCurrent();
-                $table->integer('usuarios_alcanzados')->default(0);
-                $table->decimal('radio_km', 8, 2)->default(1.0);
-                $table->timestamps();
+                $table->timestamp('created_at')->useCurrent();
+                $table->timestamp('updated_at')->nullable();
+            });
+        }
+
+        // 13. Notificaciones
+        if (!Schema::hasTable('notificaciones')) {
+            Schema::create('notificaciones', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('usuario_id')->constrained('usuarios')->onDelete('cascade');
+                $table->string('tipo');
+                $table->string('titulo');
+                $table->text('mensaje')->nullable(); // Backup has 'mensaje'
+                $table->json('datos')->nullable();
+                $table->boolean('leida')->default(false);
+                $table->boolean('enviada_push')->default(false);
+                $table->boolean('enviada_email')->default(false);
+                $table->timestamp('created_at')->useCurrent();
+                $table->timestamp('updated_at')->nullable();
             });
         }
 
