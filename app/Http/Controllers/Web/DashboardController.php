@@ -18,8 +18,8 @@ class DashboardController extends Controller
         $totalUsuarios = Usuario::count();
         $reportesActivos = Reporte::where('estado', 'activo')->count();
         $reportesResueltos = Reporte::where('estado', 'resuelto')->count();
-        $reportesPerdidos = Reporte::where('tipo_reporte', 'perdido')->count();
-        $reportesEncontrados = Reporte::where('tipo_reporte', 'encontrado')->count();
+        $reportesPerdidos = Reporte::where('tipo_reporte', 'perdido')->where('estado', 'activo')->count();
+        $reportesEncontrados = Reporte::where('tipo_reporte', 'encontrado')->where('estado', 'activo')->count();
         
         
         $reportesBaja = Reporte::where('prioridad', 'baja')->count();
