@@ -34,6 +34,16 @@ class DashboardController extends Controller
             $q->where('estado', 'activo');
         }])->orderBy('reportes_count', 'desc')->first();
         
+        // Tendencia semanal - reportes de los últimos 7 días
+        $tendenciaSemanal = collect();
+        for ($i = 6; $i >= 0; $i--) {
+            $fecha = \Carbon\Carbon::today()->subDays($i);
+            $tendenciaSemanal->push([
+                'fecha' => $fecha->isoFormat('ddd D'),
+                'total' => Reporte::whereDate('created_at', $fecha)->count()
+            ]);
+        }
+        
         
         $ultimosReportes = Reporte::with(['usuario', 'categoria', 'cuadrante'])
             ->orderBy('created_at', 'desc')
@@ -66,7 +76,8 @@ class DashboardController extends Controller
             'nuevosUsuarios',
             'categoriasPopulares',
             'reportesHoy',
-            'zonaCritica'
+            'zonaCritica',
+            'tendenciaSemanal'
         ));
     }
 }

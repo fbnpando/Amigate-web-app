@@ -692,10 +692,10 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h5 class="mb-1 fw-bold">
-                        <i class="bi bi-pie-chart-fill text-primary me-2"></i>
-                        Distribución por Tipo
+                        <i class="bi bi-pie-chart-fill text-danger me-2"></i>
+                        🔥 Estado de Alertas
                     </h5>
-                    <p class="text-muted small mb-0">Reportes perdidos vs encontrados</p>
+                    <p class="text-muted small mb-0">Casos activos vs resueltos</p>
                 </div>
             </div>
             <canvas id="tipoReportesChart" style="max-height: 300px;"></canvas>
@@ -708,9 +708,9 @@
                 <div>
                     <h5 class="mb-1 fw-bold">
                         <i class="bi bi-graph-up-arrow text-success me-2"></i>
-                        Tendencia Semanal
+                        📈 Pulso de la Ciudad
                     </h5>
-                    <p class="text-muted small mb-0">Actividad de los últimos 7 días</p>
+                    <p class="text-muted small mb-0">Casos reportados los últimos 7 días</p>
                 </div>
             </div>
             <canvas id="tendenciaChart" style="max-height: 300px;"></canvas>
@@ -945,37 +945,31 @@
         });
     }
 
-    // Gráfico de Tendencia Semanal - Line Chart
+    // Gráfico de Tendencia Semanal - Line Chart con datos REALES
     const tendenciaCtx = document.getElementById('tendenciaChart');
     if (tendenciaCtx) {
-        // Generar etiquetas de últimos 7 días
-        const dias = [];
-        const valores = [];
-        for (let i = 6; i >= 0; i--) {
-            const fecha = new Date();
-            fecha.setDate(fecha.getDate() - i);
-            dias.push(fecha.toLocaleDateString('es', { weekday: 'short', day: 'numeric' }));
-            // Valores simulados - en producción vendrían del backend
-            valores.push(Math.floor(Math.random() * 15) + 5);
-        }
+        // Datos reales del backend
+        const tendenciaData = {!! json_encode($tendenciaSemanal) !!};
+        const dias = tendenciaData.map(item => item.fecha);
+        const valores = tendenciaData.map(item => item.total);
         
         new Chart(tendenciaCtx, {
             type: 'line',
             data: {
                 labels: dias,
                 datasets: [{
-                    label: 'Reportes',
+                    label: 'Alertas',
                     data: valores,
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
                     borderWidth: 3,
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: '#2563eb',
+                    pointBackgroundColor: '#10b981',
                     pointBorderColor: '#fff',
                     pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
+                    pointRadius: 6,
+                    pointHoverRadius: 8
                 }]
             },
             options: {
@@ -986,7 +980,10 @@
                     tooltip: {
                         backgroundColor: 'rgba(0, 0, 0, 0.85)',
                         padding: 12,
-                        cornerRadius: 8
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: (ctx) => `${ctx.parsed.y} alertas`
+                        }
                     }
                 },
                 scales: {
@@ -997,7 +994,11 @@
                     y: {
                         beginAtZero: true,
                         grid: { color: '#f1f5f9' },
-                        ticks: { font: { weight: '600' }, color: '#64748b' }
+                        ticks: { 
+                            font: { weight: '600' }, 
+                            color: '#64748b',
+                            stepSize: 1
+                        }
                     }
                 }
             }
