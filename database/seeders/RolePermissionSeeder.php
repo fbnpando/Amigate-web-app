@@ -94,10 +94,15 @@ class RolePermissionSeeder extends Seeder
         }
 
         
-        $users = User::whereDoesntHave('roles')->get();
-        foreach ($users as $user) {
-            $user->assignRole('usuario');
-            $this->command->info("Rol 'usuario' asignado a: {$user->email}");
+        // Asignar rol 'usuario' por defecto a los demás usuarios
+        // Fix: Usar filtrado en PHP para evitar error SQL de tipos (bigint vs varchar) en Postgres
+        // El error ocurria porque whereDoesntHave genera un join que Postgres rechaza si los tipos no coinciden exactamente.
+        $allUsers = User::all();
+        foreach ($allUsers as $user) {
+            if ($user->roles()->count() === 0) {
+                $user->assignRole('usuario');
+                $this->command->info("Rol 'usuario' asignado a: {$user->email}");
+            }
         }
 
         $this->command->info('✅ Roles y permisos creados exitosamente!');
