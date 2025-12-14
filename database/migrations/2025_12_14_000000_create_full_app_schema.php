@@ -95,10 +95,11 @@ return new class extends Migration
                 $table->string('ciudad')->nullable();
                 $table->string('zona')->nullable();
                 $table->json('barrios')->nullable();
+                $table->boolean('activo')->default(true);
+                $table->timestamp('created_at')->useCurrent();
                 $table->decimal('centro_lat', 10, 8)->nullable();
                 $table->decimal('centro_lng', 11, 8)->nullable();
-                $table->boolean('activo')->default(true);
-                $table->timestamps();
+                // $table->timestamps(); // Removed to match backup order exactly (updated_at missing in backup)
             });
              // Add polygon column using raw SQL to bypass Blueprint limitation
             DB::statement('ALTER TABLE cuadrantes ADD COLUMN area_geografica polygon');
