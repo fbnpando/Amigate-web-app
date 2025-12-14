@@ -693,7 +693,7 @@
                 <div>
                     <h5 class="mb-1 fw-bold">
                         <i class="bi bi-pie-chart-fill text-danger me-2"></i>
-                        🔥 Estado de Alertas
+                         Estado de Alertas
                     </h5>
                     <p class="text-muted small mb-0">Casos activos vs resueltos</p>
                 </div>
@@ -708,7 +708,7 @@
                 <div>
                     <h5 class="mb-1 fw-bold">
                         <i class="bi bi-graph-up-arrow text-success me-2"></i>
-                        📈 Pulso de la Ciudad
+                         Pulso de la Ciudad
                     </h5>
                     <p class="text-muted small mb-0">Casos reportados los últimos 7 días</p>
                 </div>
