@@ -117,21 +117,20 @@
         animation: pulse-border 2s infinite;
     }
 
-    /* Stat Cards - Glassmorphism Premium */
+    /* Stat Cards - Premium Design */
     .stat-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
+        background: #ffffff;
         border-radius: 24px;
         padding: 28px;
         box-shadow: 
             0 4px 6px -1px rgba(0, 0, 0, 0.1),
             0 2px 4px -1px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            0 10px 40px -10px rgba(0, 0, 0, 0.1);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
         height: 100%;
-        border: 1px solid rgba(255, 255, 255, 0.6);
+        border: 1px solid #e2e8f0;
     }
     
     .stat-card::before {
@@ -253,15 +252,14 @@
         color: #64748b;
     }
 
-    /* Chart Container - Premium Glass */
+    /* Chart Container - Premium Design */
     .chart-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
+        background: #ffffff;
         border-radius: 24px;
         padding: 28px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         height: 100%;
-        border: 1px solid rgba(255, 255, 255, 0.6);
+        border: 1px solid #e2e8f0;
         transition: all 0.3s ease;
     }
     
@@ -276,12 +274,11 @@
     
     /* Activity Card - Premium Style */
     .activity-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
+        background: #ffffff;
         border-radius: 24px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.6);
+        border: 1px solid #e2e8f0;
     }
     
     .activity-card .card-header {
@@ -621,7 +618,7 @@
 <div class="row g-4 mb-4">
     <!-- Card COMUNIDAD (Total Usuarios) -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card success fade-in">
+        <div class="stat-card success">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label mb-2">
@@ -642,7 +639,7 @@
     
     <!-- Card ZONA CRÍTICA -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card danger fade-in" style="animation-delay: 0.1s;">
+        <div class="stat-card danger">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label mb-2">
@@ -665,7 +662,7 @@
     
     <!-- Card ALERTAS HOY -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card primary fade-in" style="animation-delay: 0.2s;">
+        <div class="stat-card primary">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label mb-2">
@@ -686,7 +683,7 @@
     
     <!-- Card CASOS ACTIVOS -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card warning fade-in" style="animation-delay: 0.3s;">
+        <div class="stat-card warning">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label mb-2">
