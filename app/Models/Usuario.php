@@ -110,9 +110,9 @@ class Usuario extends Authenticatable
         
         static::deleting(function ($usuario) {
             
-            DB::table('configuracion_notificaciones_usuario')
-                ->where('usuario_id', $usuario->id)
-                ->delete();
+            // DB::table('configuracion_notificaciones_usuario')
+            //     ->where('usuario_id', $usuario->id)
+            //     ->delete();
         });
     }
 
