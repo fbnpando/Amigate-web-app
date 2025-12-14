@@ -44,7 +44,7 @@ return new class extends Migration
         if (!Schema::hasTable('sessions')) {
             Schema::create('sessions', function (Blueprint $table) {
                 $table->string('id')->primary();
-                $table->foreignUuid('user_id')->nullable()->index();
+                $table->string('user_id')->nullable()->index(); // Changed to string/generic to support both UUID and Int IDs
                 $table->string('ip_address', 45)->nullable();
                 $table->text('user_agent')->nullable();
                 $table->longText('payload');
@@ -70,6 +70,7 @@ return new class extends Migration
             Schema::create('cuadrantes', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre');
+                $table->string('codigo')->nullable(); // Added missing column
                 //$table->specificType('area_geografica', 'polygon')->nullable();
                 $table->boolean('activo')->default(true);
                 $table->timestamps();
@@ -178,6 +179,8 @@ return new class extends Migration
             Schema::create('expansiones_reporte', function (Blueprint $table) {
                 $table->id();
                 $table->foreignUuid('reporte_id')->constrained('reportes')->onDelete('cascade');
+                $table->uuid('cuadrante_original_id'); // Added missing column
+                $table->uuid('cuadrante_expandido_id'); // Added missing column
                 $table->integer('nivel');
                 $table->timestamp('fecha_expansion')->useCurrent();
                 $table->integer('usuarios_alcanzados')->default(0);
