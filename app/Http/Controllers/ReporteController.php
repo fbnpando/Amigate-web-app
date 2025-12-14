@@ -60,11 +60,9 @@ class ReporteController extends Controller
     public function show($id)
     {
         $reporte = Reporte::with([
-            'usuario', 
-            'categoria', 
-            'cuadrante', 
             'respuestas.usuario',
-            'expansiones'
+            'expansiones',
+            'imagenes'
         ])->findOrFail($id);
 
         

@@ -106,6 +106,32 @@
                 <hr>
 
                 
+                
+                @if($reporte->imagenes->count() > 0)
+                <div class="mb-4">
+                    <h6><i class="bi bi-images me-2"></i>Imágenes del Reporte</h6>
+                    <div id="carouselReporteImages" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner rounded shadow-sm">
+                            @foreach($reporte->imagenes as $key => $imagen)
+                                <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                                    <img src="{{ $imagen->url }}" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="Imagen del reporte">
+                                </div>
+                            @endforeach
+                        </div>
+                        @if($reporte->imagenes->count() > 1)
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselReporteImages" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselReporteImages" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+                @endif
+
                 <div class="mb-4">
                     <h6><i class="bi bi-file-text me-2"></i>Descripción</h6>
                     <p class="text-justify">{{ $reporte->descripcion }}</p>
