@@ -82,7 +82,7 @@ return new class extends Migration
             Schema::create('cuadrantes', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre');
-                $table->polygon('area_geografica')->nullable(); // Using polygon for geo area
+                $table->specificType('area_geografica', 'geometry')->nullable(); // Using geometry type for polygon
                 $table->boolean('activo')->default(true);
                 $table->timestamps();
             });
