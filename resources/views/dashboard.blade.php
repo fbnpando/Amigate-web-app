@@ -866,7 +866,7 @@
                         </h5>
                         <p class="text-muted small mb-0">Mayor actividad histórica</p>
                     </div>
-                    <div class="card-body px-4 pb-4">
+                    <div class="card-body px-4 pb-4" style="max-height: 280px; overflow-y: auto;">
                         @forelse($categoriasPopulares ?? [] as $categoria)
                         <div class="d-flex align-items-center mb-3">
                             <div class="flex-grow-1">
