@@ -82,9 +82,21 @@ return new class extends Migration
         if (!Schema::hasTable('cuadrantes')) {
             Schema::create('cuadrantes', function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->string('nombre');
-                $table->string('codigo')->nullable(); // Added missing column
-                //$table->specificType('area_geografica', 'polygon')->nullable();
+                $table->string('codigo');
+                $table->string('fila');
+                $table->integer('columna');
+                $table->string('nombre')->nullable();
+                $table->text('geometria')->nullable();
+                $table->text('centro')->nullable();
+                $table->decimal('lat_min', 10, 8);
+                $table->decimal('lat_max', 10, 8);
+                $table->decimal('lng_min', 11, 8);
+                $table->decimal('lng_max', 11, 8);
+                $table->string('ciudad')->nullable();
+                $table->string('zona')->nullable();
+                $table->json('barrios')->nullable();
+                $table->decimal('centro_lat', 10, 8)->nullable();
+                $table->decimal('centro_lng', 11, 8)->nullable();
                 $table->boolean('activo')->default(true);
                 $table->timestamps();
             });
