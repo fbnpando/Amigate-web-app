@@ -50,8 +50,8 @@ class AuthController extends Controller
             //     'sms_activo' => false
             // ]);
 
-            // Generar token simple (en producción usa Laravel Sanctum)
-            $token = Str::random(60);
+            // Generar token Sanctum
+            $token = $usuario->createToken('auth_token')->plainTextToken;
 
             return response()->json([
                 'success' => true,
@@ -105,8 +105,8 @@ class AuthController extends Controller
                 ], 403);
             }
 
-            // Generar token
-            $token = Str::random(60);
+            // Generar token Sanctum
+            $token = $usuario->createToken('auth_token')->plainTextToken;
 
             return response()->json([
                 'success' => true,
