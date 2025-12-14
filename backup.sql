@@ -26,7 +26,7 @@ SET row_security = off;
 -- *not* creating schema, since initdb creates it
 
 
-ALTER SCHEMA public OWNER TO roderich;
+ALTER SCHEMA public OWNER TO postgres;
 
 --
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: roderich
@@ -70,7 +70,7 @@ CREATE TABLE public.cache (
 );
 
 
-ALTER TABLE public.cache OWNER TO roderich;
+ALTER TABLE public.cache OWNER TO postgres;
 
 --
 -- Name: cache_locks; Type: TABLE; Schema: public; Owner: roderich
@@ -83,7 +83,7 @@ CREATE TABLE public.cache_locks (
 );
 
 
-ALTER TABLE public.cache_locks OWNER TO roderich;
+ALTER TABLE public.cache_locks OWNER TO postgres;
 
 --
 -- Name: categorias; Type: TABLE; Schema: public; Owner: roderich
@@ -100,7 +100,7 @@ CREATE TABLE public.categorias (
 );
 
 
-ALTER TABLE public.categorias OWNER TO roderich;
+ALTER TABLE public.categorias OWNER TO postgres;
 
 --
 -- Name: configuracion_notificaciones_usuario; Type: TABLE; Schema: public; Owner: roderich
@@ -117,7 +117,7 @@ CREATE TABLE public.configuracion_notificaciones_usuario (
 );
 
 
-ALTER TABLE public.configuracion_notificaciones_usuario OWNER TO roderich;
+ALTER TABLE public.configuracion_notificaciones_usuario OWNER TO postgres;
 
 --
 -- Name: configuracion_sistema; Type: TABLE; Schema: public; Owner: roderich
@@ -133,7 +133,7 @@ CREATE TABLE public.configuracion_sistema (
 );
 
 
-ALTER TABLE public.configuracion_sistema OWNER TO roderich;
+ALTER TABLE public.configuracion_sistema OWNER TO postgres;
 
 --
 -- Name: cuadrante_barrios; Type: TABLE; Schema: public; Owner: roderich
@@ -147,7 +147,7 @@ CREATE TABLE public.cuadrante_barrios (
 );
 
 
-ALTER TABLE public.cuadrante_barrios OWNER TO roderich;
+ALTER TABLE public.cuadrante_barrios OWNER TO postgres;
 
 --
 -- Name: cuadrantes; Type: TABLE; Schema: public; Owner: roderich
@@ -172,7 +172,7 @@ CREATE TABLE public.cuadrantes (
 );
 
 
-ALTER TABLE public.cuadrantes OWNER TO roderich;
+ALTER TABLE public.cuadrantes OWNER TO postgres;
 
 --
 -- Name: expansiones_reporte; Type: TABLE; Schema: public; Owner: roderich
@@ -187,7 +187,7 @@ CREATE TABLE public.expansiones_reporte (
 );
 
 
-ALTER TABLE public.expansiones_reporte OWNER TO roderich;
+ALTER TABLE public.expansiones_reporte OWNER TO postgres;
 
 --
 -- Name: failed_jobs; Type: TABLE; Schema: public; Owner: roderich
@@ -204,7 +204,7 @@ CREATE TABLE public.failed_jobs (
 );
 
 
-ALTER TABLE public.failed_jobs OWNER TO roderich;
+ALTER TABLE public.failed_jobs OWNER TO postgres;
 
 --
 -- Name: failed_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: roderich
@@ -218,7 +218,7 @@ CREATE SEQUENCE public.failed_jobs_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.failed_jobs_id_seq OWNER TO roderich;
+ALTER SEQUENCE public.failed_jobs_id_seq OWNER TO postgres;
 
 --
 -- Name: failed_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: roderich
@@ -242,7 +242,7 @@ CREATE TABLE public.grupo_miembros (
 );
 
 
-ALTER TABLE public.grupo_miembros OWNER TO roderich;
+ALTER TABLE public.grupo_miembros OWNER TO postgres;
 
 --
 -- Name: grupos; Type: TABLE; Schema: public; Owner: roderich
@@ -261,7 +261,7 @@ CREATE TABLE public.grupos (
 );
 
 
-ALTER TABLE public.grupos OWNER TO roderich;
+ALTER TABLE public.grupos OWNER TO postgres;
 
 --
 -- Name: job_batches; Type: TABLE; Schema: public; Owner: roderich
@@ -281,7 +281,7 @@ CREATE TABLE public.job_batches (
 );
 
 
-ALTER TABLE public.job_batches OWNER TO roderich;
+ALTER TABLE public.job_batches OWNER TO postgres;
 
 --
 -- Name: jobs; Type: TABLE; Schema: public; Owner: roderich
@@ -298,7 +298,7 @@ CREATE TABLE public.jobs (
 );
 
 
-ALTER TABLE public.jobs OWNER TO roderich;
+ALTER TABLE public.jobs OWNER TO postgres;
 
 --
 -- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: roderich
@@ -312,7 +312,7 @@ CREATE SEQUENCE public.jobs_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.jobs_id_seq OWNER TO roderich;
+ALTER SEQUENCE public.jobs_id_seq OWNER TO postgres;
 
 --
 -- Name: jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: roderich
@@ -332,7 +332,7 @@ CREATE TABLE public.migrations (
 );
 
 
-ALTER TABLE public.migrations OWNER TO roderich;
+ALTER TABLE public.migrations OWNER TO postgres;
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: roderich
@@ -347,7 +347,7 @@ CREATE SEQUENCE public.migrations_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.migrations_id_seq OWNER TO roderich;
+ALTER SEQUENCE public.migrations_id_seq OWNER TO postgres;
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: roderich
@@ -367,7 +367,7 @@ CREATE TABLE public.model_has_permissions (
 );
 
 
-ALTER TABLE public.model_has_permissions OWNER TO roderich;
+ALTER TABLE public.model_has_permissions OWNER TO postgres;
 
 --
 -- Name: model_has_roles; Type: TABLE; Schema: public; Owner: roderich
@@ -380,7 +380,7 @@ CREATE TABLE public.model_has_roles (
 );
 
 
-ALTER TABLE public.model_has_roles OWNER TO roderich;
+ALTER TABLE public.model_has_roles OWNER TO postgres;
 
 --
 -- Name: notificacion_datos; Type: TABLE; Schema: public; Owner: roderich
@@ -395,7 +395,7 @@ CREATE TABLE public.notificacion_datos (
 );
 
 
-ALTER TABLE public.notificacion_datos OWNER TO roderich;
+ALTER TABLE public.notificacion_datos OWNER TO postgres;
 
 --
 -- Name: notificaciones; Type: TABLE; Schema: public; Owner: roderich
@@ -414,7 +414,7 @@ CREATE TABLE public.notificaciones (
 );
 
 
-ALTER TABLE public.notificaciones OWNER TO roderich;
+ALTER TABLE public.notificaciones OWNER TO postgres;
 
 --
 -- Name: password_reset_tokens; Type: TABLE; Schema: public; Owner: roderich
@@ -427,7 +427,7 @@ CREATE TABLE public.password_reset_tokens (
 );
 
 
-ALTER TABLE public.password_reset_tokens OWNER TO roderich;
+ALTER TABLE public.password_reset_tokens OWNER TO postgres;
 
 --
 -- Name: permissions; Type: TABLE; Schema: public; Owner: roderich
@@ -442,7 +442,7 @@ CREATE TABLE public.permissions (
 );
 
 
-ALTER TABLE public.permissions OWNER TO roderich;
+ALTER TABLE public.permissions OWNER TO postgres;
 
 --
 -- Name: permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: roderich
@@ -456,7 +456,7 @@ CREATE SEQUENCE public.permissions_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.permissions_id_seq OWNER TO roderich;
+ALTER SEQUENCE public.permissions_id_seq OWNER TO postgres;
 
 --
 -- Name: permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: roderich
@@ -478,7 +478,7 @@ CREATE TABLE public.reporte_caracteristicas (
 );
 
 
-ALTER TABLE public.reporte_caracteristicas OWNER TO roderich;
+ALTER TABLE public.reporte_caracteristicas OWNER TO postgres;
 
 --
 -- Name: reporte_imagenes; Type: TABLE; Schema: public; Owner: roderich
@@ -493,7 +493,7 @@ CREATE TABLE public.reporte_imagenes (
 );
 
 
-ALTER TABLE public.reporte_imagenes OWNER TO roderich;
+ALTER TABLE public.reporte_imagenes OWNER TO postgres;
 
 --
 -- Name: reporte_videos; Type: TABLE; Schema: public; Owner: roderich
@@ -508,7 +508,7 @@ CREATE TABLE public.reporte_videos (
 );
 
 
-ALTER TABLE public.reporte_videos OWNER TO roderich;
+ALTER TABLE public.reporte_videos OWNER TO postgres;
 
 --
 -- Name: reportes; Type: TABLE; Schema: public; Owner: roderich
@@ -545,7 +545,7 @@ CREATE TABLE public.reportes (
 );
 
 
-ALTER TABLE public.reportes OWNER TO roderich;
+ALTER TABLE public.reportes OWNER TO postgres;
 
 --
 -- Name: respuesta_imagenes; Type: TABLE; Schema: public; Owner: roderich
@@ -560,7 +560,7 @@ CREATE TABLE public.respuesta_imagenes (
 );
 
 
-ALTER TABLE public.respuesta_imagenes OWNER TO roderich;
+ALTER TABLE public.respuesta_imagenes OWNER TO postgres;
 
 --
 -- Name: respuesta_videos; Type: TABLE; Schema: public; Owner: roderich
@@ -575,7 +575,7 @@ CREATE TABLE public.respuesta_videos (
 );
 
 
-ALTER TABLE public.respuesta_videos OWNER TO roderich;
+ALTER TABLE public.respuesta_videos OWNER TO postgres;
 
 --
 -- Name: respuestas; Type: TABLE; Schema: public; Owner: roderich
@@ -597,7 +597,7 @@ CREATE TABLE public.respuestas (
 );
 
 
-ALTER TABLE public.respuestas OWNER TO roderich;
+ALTER TABLE public.respuestas OWNER TO postgres;
 
 --
 -- Name: role_has_permissions; Type: TABLE; Schema: public; Owner: roderich
@@ -609,7 +609,7 @@ CREATE TABLE public.role_has_permissions (
 );
 
 
-ALTER TABLE public.role_has_permissions OWNER TO roderich;
+ALTER TABLE public.role_has_permissions OWNER TO postgres;
 
 --
 -- Name: roles; Type: TABLE; Schema: public; Owner: roderich
@@ -624,7 +624,7 @@ CREATE TABLE public.roles (
 );
 
 
-ALTER TABLE public.roles OWNER TO roderich;
+ALTER TABLE public.roles OWNER TO postgres;
 
 --
 -- Name: roles_id_seq; Type: SEQUENCE; Schema: public; Owner: roderich
@@ -638,7 +638,7 @@ CREATE SEQUENCE public.roles_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.roles_id_seq OWNER TO roderich;
+ALTER SEQUENCE public.roles_id_seq OWNER TO postgres;
 
 --
 -- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: roderich
@@ -661,7 +661,7 @@ CREATE TABLE public.sessions (
 );
 
 
-ALTER TABLE public.sessions OWNER TO roderich;
+ALTER TABLE public.sessions OWNER TO postgres;
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: roderich
@@ -679,7 +679,7 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO roderich;
+ALTER TABLE public.users OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: roderich
@@ -693,7 +693,7 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.users_id_seq OWNER TO roderich;
+ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: roderich
@@ -725,7 +725,7 @@ CREATE TABLE public.usuarios (
 );
 
 
-ALTER TABLE public.usuarios OWNER TO roderich;
+ALTER TABLE public.usuarios OWNER TO postgres;
 
 --
 -- Name: failed_jobs id; Type: DEFAULT; Schema: public; Owner: roderich
