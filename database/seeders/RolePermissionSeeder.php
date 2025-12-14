@@ -94,10 +94,13 @@ class RolePermissionSeeder extends Seeder
         }
 
         
-        $users = User::whereDoesntHave('roles')->get();
-        foreach ($users as $user) {
-            $user->assignRole('usuario');
-            $this->command->info("Rol 'usuario' asignado a: {$user->email}");
+        // Fix: Usar filtrado en PHP porque whereDoesntHave falla en Postgres por tipos mixtos (Int vs UUID/String)
+        $allUsers = User::all();
+        foreach ($allUsers as $user) {
+            if ($user->roles()->count() === 0) {
+                $user->assignRole('usuario');
+                $this->command->info("Rol 'usuario' asignado a: {$user->email}");
+            }
         }
 
         $this->command->info('✅ Roles y permisos creados exitosamente!');
