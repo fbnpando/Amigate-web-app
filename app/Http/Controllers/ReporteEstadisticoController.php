@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
+use App\Models\Categoria;
+
 class ReporteEstadisticoController extends Controller
 {
     public function index()
@@ -43,16 +45,21 @@ class ReporteEstadisticoController extends Controller
             ->get();
     }
 
-    private function getDatosTendencias($year)
+    private function getDatosTendencias($year, $categoriaId = null)
     {
-         return Reporte::select(
+         $query = Reporte::select(
                 DB::raw('EXTRACT(MONTH FROM created_at) as mes'),
                 DB::raw('COUNT(*) as total'),
                 DB::raw('SUM(CASE WHEN tipo_reporte = \'perdido\' THEN 1 ELSE 0 END) as perdidos'),
-                DB::raw('SUM(CASE WHEN tipo_reporte = \'encontrado\' THEN 1 ELSE 0 END) as encontrados')
+                DB::raw('SUM(CASE WHEN estado = \'resuelto\' THEN 1 ELSE 0 END) as resueltos')
             )
-            ->whereYear('created_at', $year)
-            ->groupBy('mes')
+            ->whereYear('created_at', $year);
+
+        if ($categoriaId) {
+            $query->where('categoria_id', $categoriaId);
+        }
+
+        return $query->groupBy('mes')
             ->orderBy('mes')
             ->get();
     }
@@ -91,27 +98,29 @@ class ReporteEstadisticoController extends Controller
     public function tendenciasTemporales(Request $request)
     {
         $year = $request->input('year', date('Y'));
+        $categoriaId = $request->input('categoria_id');
         
-        $incidentesPorMes = $this->getDatosTendencias($year);
+        $incidentesPorMes = $this->getDatosTendencias($year, $categoriaId);
+        $categorias = Categoria::orderBy('nombre')->get();
 
         $meses = [];
         $dataPerdidos = [];
-        $dataEncontrados = [];
+        $dataResueltos = [];
         
         for ($i = 1; $i <= 12; $i++) {
-            $meses[] = Carbon::create()->month($i)->format('F');
+            $meses[] = Carbon::create()->month($i)->locale('es')->monthName; // Localized month name
             $dato = $incidentesPorMes->firstWhere('mes', $i);
             $dataPerdidos[] = $dato ? $dato->perdidos : 0;
-            $dataEncontrados[] = $dato ? $dato->encontrados : 0;
+            $dataResueltos[] = $dato ? $dato->resueltos : 0;
         }
 
         $chartData = [
             'labels' => $meses,
             'perdidos' => $dataPerdidos,
-            'encontrados' => $dataEncontrados
+            'resueltos' => $dataResueltos
         ];
 
-        return view('reportes.tendencias', compact('chartData', 'year'));
+        return view('reportes.tendencias', compact('chartData', 'year', 'categorias', 'categoriaId'));
     }
 
     private function getExportData(Request $request, $reporte)

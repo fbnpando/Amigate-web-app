@@ -16,6 +16,17 @@
                             <input type="number" name="year" value="{{ $year }}" min="2020" max="{{ date('Y') }}" class="form-control">
                         </div>
                         <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold">Categoría</label>
+                            <select name="categoria_id" class="form-select">
+                                <option value="">Todas las categorías</option>
+                                @foreach($categorias as $cat)
+                                    <option value="{{ $cat->id }}" {{ (isset($categoriaId) && $categoriaId == $cat->id) ? 'selected' : '' }}>
+                                        {{ $cat->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="bi bi-graph-up me-2"></i>Analizar
                             </button>
@@ -41,7 +52,7 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-calendar-range me-2"></i>Evolución Mensual (Perdidos vs Encontrados)</h5>
+                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-calendar-range me-2"></i>Evolución Mensual (Perdidos vs Resueltos)</h5>
                     <span class="badge bg-secondary">{{ $year }}</span>
                 </div>
                 <div class="card-body">
@@ -63,11 +74,11 @@
              </div>
         </div>
         <div class="col-md-6 mt-4">
-             <div class="alert alert-success d-flex align-items-center mb-0 border-0 shadow-sm text-white" style="background-color: #10B981;">
+             <div class="alert alert-primary d-flex align-items-center mb-0 border-0 shadow-sm text-white" style="background-color: #2563eb;">
                  <i class="bi bi-check-circle-fill fs-2 me-3"></i>
                  <div>
-                     <strong>Total Encontrados</strong>
-                     <div class="fs-4 fw-bold">{{ array_sum($chartData['encontrados']) }} hallazgos</div>
+                     <strong>Total Resueltos</strong>
+                     <div class="fs-4 fw-bold">{{ array_sum($chartData['resueltos']) }} casos</div>
                  </div>
              </div>
         </div>
@@ -94,11 +105,11 @@
                         borderWidth: 2
                     },
                     {
-                        label: 'Objetos Encontrados',
-                        data: {!! json_encode($chartData['encontrados']) !!},
-                        borderColor: '#10B981', 
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        pointBackgroundColor: '#10B981',
+                        label: 'Casos Resueltos',
+                        data: {!! json_encode($chartData['resueltos']) !!},
+                        borderColor: '#2563eb', 
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        pointBackgroundColor: '#2563eb',
                         fill: true,
                         tension: 0.4,
                         borderWidth: 2
