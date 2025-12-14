@@ -43,12 +43,12 @@ class AuthController extends Controller
             ]);
 
             // Crear configuración de notificaciones por defecto
-            ConfiguracionNotificacionesUsuario::create([
-                'usuario_id' => $usuario->id,
-                'push_activo' => true,
-                'email_activo' => true,
-                'sms_activo' => false
-            ]);
+            // ConfiguracionNotificacionesUsuario::create([
+            //     'usuario_id' => $usuario->id,
+            //     'push_activo' => true,
+            //     'email_activo' => true,
+            //     'sms_activo' => false
+            // ]);
 
             // Generar token simple (en producción usa Laravel Sanctum)
             $token = Str::random(60);
