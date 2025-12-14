@@ -629,6 +629,10 @@
                 html: "<div class='marker-pulse marker-perdido'></div>",
                 iconSize: [20, 20], iconAnchor: [10, 10]
             }),
+            resuelto: L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div class='marker-pulse bg-primary'></div>",
+                iconSize: [20, 20], iconAnchor: [10, 10]
             })
         };
 
