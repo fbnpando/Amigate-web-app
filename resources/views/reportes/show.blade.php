@@ -69,7 +69,7 @@
 
     /* Custom Scrollbar for Timeline */
     .timeline-container {
-        max-height: 500px;
+        flex-grow: 1;
         overflow-y: auto;
         padding-right: 10px;
         scrollbar-width: thin;
@@ -175,10 +175,10 @@
     </div>
     @endif
 
-    <div class="row g-4">
+    <div class="row g-4 align-items-stretch">
         <!-- Columna Izquierda: Información Principal -->
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="col-lg-8 d-flex flex-column">
+            <div class="card border-0 shadow-sm rounded-4 mb-4 flex-grow-1 d-flex flex-column">
                 <div class="card-body p-4">
                     <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">
                         <i class="bi bi-info-circle-fill me-2"></i> Detalles del Caso
@@ -307,7 +307,7 @@
         </div>
 
         <!-- Columna Derecha: Contacto y Timeline -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 d-flex flex-column">
             @if($reporte->contacto_publico)
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
@@ -344,7 +344,7 @@
             </div>
             @endif
 
-            <div class="card border-0 shadow-sm rounded-4">
+            <div class="card border-0 shadow-sm rounded-4 flex-grow-1 d-flex flex-column">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-end">
                     <h5 class="fw-bold mb-0 text-primary">
                         <i class="bi bi-hourglass-split me-2"></i> Seguimiento
@@ -353,7 +353,7 @@
                         <small class="text-muted" style="font-size: 0.75rem;">Desliza para ver más</small>
                     @endif
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-4 flex-grow-1 d-flex flex-column">
                     <div class="timeline-container">
                         <div class="timeline-enhanced">
                             @foreach($timeline as $evento)
