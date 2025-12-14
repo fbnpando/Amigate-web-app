@@ -5,168 +5,315 @@
 
 @push('styles')
 <style>
+    /* ============================================
+       🎨 DISEÑO IMPACTANTE - CENTRO DE RESCATE
+       ============================================ */
+    
+    /* Aurora Gradient Animation */
+    @keyframes aurora {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.6); }
+    }
+    
+    @keyframes pulse-ring {
+        0% { transform: scale(0.95); opacity: 1; }
+        100% { transform: scale(1.3); opacity: 0; }
+    }
+    
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Dashboard Hero Header - Ultra Impactante */
     .dashboard-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        border-radius: 20px;
-        padding: 30px;
+        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #7c3aed, #1e40af, #0f172a);
+        background-size: 400% 400%;
+        animation: aurora 15s ease infinite;
+        border-radius: 24px;
+        padding: 40px;
         color: white;
         margin-bottom: 30px;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     }
     
     .dashboard-header::before {
         content: '';
         position: absolute;
         top: -50%;
-        right: -10%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
         width: 400px;
         height: 400px;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 60%);
         border-radius: 50%;
+        animation: float 8s ease-in-out infinite reverse;
     }
     
     .dashboard-header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 10px;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 12px;
         position: relative;
         z-index: 1;
+        text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        letter-spacing: -0.5px;
     }
     
     .dashboard-header p {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         opacity: 0.95;
         position: relative;
         z-index: 1;
+        font-weight: 500;
     }
     
+    .dashboard-header .live-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(16, 185, 129, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    
+    .dashboard-header .live-dot {
+        width: 10px;
+        height: 10px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse-border 2s infinite;
+    }
+
+    /* Stat Cards - Glassmorphism Premium */
     .stat-card {
-        background: white;
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
         height: 100%;
-        border-left: 4px solid;
+        border: 1px solid rgba(255, 255, 255, 0.6);
     }
     
     .stat-card::before {
         content: '';
         position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(0,0,0,0.03) 0%, transparent 70%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        border-radius: 24px 24px 0 0;
     }
     
-    .stat-card:hover::before {
-        opacity: 1;
-    }
+    .stat-card.primary::before { background: linear-gradient(90deg, #2563eb, #7c3aed); }
+    .stat-card.success::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .stat-card.info::before { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+    .stat-card.danger::before { background: linear-gradient(90deg, #ef4444, #f87171); }
     
     .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(37, 99, 235, 0.1);
     }
     
-    .stat-card.primary { border-left-color: #2563eb; }
-    .stat-card.success { border-left-color: #10b981; }
-    .stat-card.warning { border-left-color: #f59e0b; }
-    .stat-card.info { border-left-color: #06b6d4; }
-    .stat-card.danger { border-left-color: #ef4444; }
-    
+    .stat-card.primary:hover { box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.25); }
+    .stat-card.success:hover { box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.25); }
+    .stat-card.warning:hover { box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.25); }
+    .stat-card.info:hover { box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25); }
+    .stat-card.danger:hover { box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.25); }
+
     .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 15px;
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.8rem;
-        margin-bottom: 15px;
-    }
-    
-    .stat-icon.primary { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; }
-    .stat-icon.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-    .stat-icon.warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
-    .stat-icon.info { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; }
-    .stat-icon.danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
-    
-    .stat-value {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 10px 0;
-        background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    .stat-label {
-        font-size: 0.9rem;
-        color: #64748b;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .stat-change {
-        font-size: 0.85rem;
-        margin-top: 8px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .mini-stat-card {
-        background: white;
-        border-radius: 15px;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.06);
-        transition: all 0.3s ease;
-        border-top: 3px solid;
-    }
-    
-    .mini-stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-    
-    .mini-stat-card.danger { border-top-color: #ef4444; }
-    .mini-stat-card.success { border-top-color: #10b981; }
-    .mini-stat-card.warning { border-top-color: #f59e0b; }
-    .mini-stat-card.info { border-top-color: #06b6d4; }
-    
-    .chart-container {
-        background: white;
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        height: 100%;
-    }
-    
-    .activity-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        font-size: 2rem;
+        position: relative;
         overflow: hidden;
     }
     
+    .stat-icon::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 3s infinite;
+    }
+    
+    .stat-icon.primary { 
+        background: linear-gradient(135deg, #2563eb, #7c3aed); 
+        color: white;
+        box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.4);
+    }
+    .stat-icon.success { 
+        background: linear-gradient(135deg, #10b981, #34d399); 
+        color: white;
+        box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.4);
+    }
+    .stat-icon.warning { 
+        background: linear-gradient(135deg, #f59e0b, #fbbf24); 
+        color: white;
+        box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.4);
+    }
+    .stat-icon.info { 
+        background: linear-gradient(135deg, #06b6d4, #22d3ee); 
+        color: white;
+        box-shadow: 0 10px 30px -5px rgba(6, 182, 212, 0.4);
+    }
+    .stat-icon.danger { 
+        background: linear-gradient(135deg, #ef4444, #f87171); 
+        color: white;
+        box-shadow: 0 10px 30px -5px rgba(239, 68, 68, 0.4);
+    }
+    
+    .stat-value {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 12px 0;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: countUp 0.8s ease-out forwards;
+        letter-spacing: -1px;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+        color: #64748b;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .stat-change {
+        font-size: 0.9rem;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 50px;
+        width: fit-content;
+    }
+    
+    .stat-change.positive {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+    }
+    
+    .stat-change.neutral {
+        background: rgba(100, 116, 139, 0.1);
+        color: #64748b;
+    }
+
+    /* Chart Container - Premium Glass */
+    .chart-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        height: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: all 0.3s ease;
+    }
+    
+    .chart-container:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .chart-container h5 {
+        font-weight: 700;
+        color: #1e293b;
+    }
+    
+    /* Activity Card - Premium Style */
+    .activity-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+    
+    .activity-card .card-header {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(124, 58, 237, 0.05));
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
     .activity-item {
-        padding: 20px;
+        padding: 20px 24px;
         border-bottom: 1px solid #f1f5f9;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .activity-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: transparent;
+        transition: background 0.3s ease;
     }
     
     .activity-item:hover {
-        background: #f8fafc;
-        padding-left: 22px;
+        background: linear-gradient(90deg, rgba(37, 99, 235, 0.03), transparent);
+        padding-left: 28px;
+    }
+    
+    .activity-item:hover::before {
+        background: linear-gradient(180deg, #2563eb, #7c3aed);
     }
     
     .activity-item:last-child {
@@ -174,14 +321,63 @@
     }
     
     .user-avatar {
-        width: 45px;
-        height: 45px;
-        border-radius: 12px;
+        width: 50px;
+        height: 50px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Badges Premium */
+    .badge {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    
+    /* Animación de Pulso para Alertas */
+    @keyframes pulse-border {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+        70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    
+    .pulse-animation {
+        animation: pulse-border 2s infinite;
+    }
+    
+    /* Mini stat cards */
+    .mini-stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .mini-stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+    }
+    
+    .mini-stat-card.danger::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .mini-stat-card.success::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .mini-stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .mini-stat-card.info::before { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+    
+    .mini-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     }
     
     .category-badge {
@@ -199,40 +395,24 @@
         transform: scale(1.02);
     }
     
-    /* Animación de Pulso para Alertas */
-    @keyframes pulse-border {
-        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-        70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    }
-    
-    .pulse-animation {
-        animation: pulse-border 2s infinite;
-    }
-    
+    /* Fade in animation */
     .fade-in {
         opacity: 0;
-        animation: fadeIn 0.3s ease forwards;
+        animation: fadeIn 0.5s ease forwards;
     }
     
     @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Desactivar animaciones para mejor rendimiento en carga */
-    @media (prefers-reduced-motion: reduce) {
-        .fade-in {
-            animation: none;
-            opacity: 1;
-        }
-    }
+    /* Stagger animation for cards */
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
     
-    /* Optimización: GPU acceleration */
+    /* GPU Optimization */
     .stat-card,
     .mini-stat-card,
     .chart-container,
@@ -241,69 +421,61 @@
         transform: translateZ(0);
     }
     
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        .dashboard-header,
+        .stat-icon::after,
+        .fade-in {
+            animation: none;
+        }
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+        }
+    }
+
     /* ============================================
        RESPONSIVE DESIGN
        ============================================ */
     
-    /* Tablet y Desktop Pequeño (768px - 991px) */
     @media (max-width: 991.98px) {
         .dashboard-header {
-            padding: 25px 20px;
-            border-radius: 15px;
+            padding: 30px 20px;
+            border-radius: 20px;
         }
         
         .dashboard-header h1 {
-            font-size: 2rem;
-        }
-        
-        .dashboard-header p {
-            font-size: 1rem;
+            font-size: 2.2rem;
         }
         
         .stat-card {
-            padding: 20px;
-            border-radius: 15px;
+            padding: 22px;
+            border-radius: 20px;
         }
         
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.5rem;
         }
         
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            font-size: 1.5rem;
-        }
-        
-        .chart-container {
-            padding: 20px;
-            border-radius: 15px;
-        }
-        
-        .activity-item {
-            padding: 15px;
-        }
-        
-        .activity-item:hover {
-            padding-left: 20px;
+            width: 55px;
+            height: 55px;
+            font-size: 1.6rem;
         }
     }
     
-    /* Móvil (576px - 767px) */
     @media (max-width: 767.98px) {
         .dashboard-header {
-            padding: 20px 15px;
-            border-radius: 15px;
+            padding: 25px 18px;
+            border-radius: 18px;
             margin-bottom: 20px;
         }
         
         .dashboard-header h1 {
-            font-size: 1.75rem;
-            margin-bottom: 8px;
+            font-size: 1.8rem;
         }
         
         .dashboard-header p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         
         .dashboard-header .d-flex {
@@ -312,249 +484,97 @@
             gap: 15px;
         }
         
-        .dashboard-header .text-end {
-            text-align: left !important;
-            width: 100%;
-        }
-        
         .stat-card {
-            padding: 20px 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            padding: 20px 16px;
+            border-radius: 16px;
+            margin-bottom: 12px;
         }
         
         .stat-icon {
             width: 50px;
             height: 50px;
-            font-size: 1.5rem;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
         }
         
         .stat-value {
-            font-size: 1.75rem;
-            margin: 8px 0;
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-        }
-        
-        .stat-change {
-            font-size: 0.8rem;
-            flex-wrap: wrap;
-        }
-        
-        .mini-stat-card {
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .mini-stat-card i {
-            font-size: 2rem !important;
-        }
-        
-        .mini-stat-card h3 {
-            font-size: 1.5rem;
-        }
-        
-        .chart-container {
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .chart-container h5 {
-            font-size: 1rem;
-        }
-        
-        .chart-container p {
-            font-size: 0.85rem;
-        }
-        
-        .activity-card {
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .activity-card .card-header {
-            padding: 15px !important;
-        }
-        
-        .activity-card .card-header h5 {
-            font-size: 1rem;
-        }
-        
-        .activity-card .card-header p {
-            font-size: 0.8rem;
-        }
-        
-        .activity-item {
-            padding: 15px;
-            flex-direction: column;
-        }
-        
-        .activity-item:hover {
-            padding-left: 15px;
-        }
-        
-        .activity-item .d-flex {
-            flex-direction: column;
-            align-items: flex-start !important;
-        }
-        
-        .activity-item .flex-grow-1 {
-            width: 100%;
-        }
-        
-        .activity-item .d-flex.justify-content-between {
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .activity-item .text-end {
-            text-align: left !important;
-            width: 100%;
-        }
-        
-        .activity-item .d-flex.align-items-center.gap-2 {
-            flex-wrap: wrap;
-            gap: 8px !important;
-        }
-        
-        .activity-item .d-flex.align-items-center.gap-3 {
-            flex-direction: column;
-            align-items: flex-start !important;
-            gap: 8px !important;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            font-size: 1rem;
-        }
-        
-        .category-badge {
-            padding: 8px 12px;
-            font-size: 0.85rem;
-            width: 100%;
-            justify-content: space-between;
-        }
-        
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.85rem;
-        }
-        
-        /* Ajustes de columnas Bootstrap */
-        .row.g-4 {
-            --bs-gutter-y: 1rem;
-            --bs-gutter-x: 1rem;
-        }
-    }
-    
-    /* Móvil Pequeño (menos de 576px) */
-    @media (max-width: 575.98px) {
-        .dashboard-header {
-            padding: 15px;
-            border-radius: 12px;
-        }
-        
-        .dashboard-header h1 {
-            font-size: 1.5rem;
-        }
-        
-        .dashboard-header p {
-            font-size: 0.85rem;
-        }
-        
-        .stat-card {
-            padding: 15px;
-        }
-        
-        .stat-icon {
-            width: 45px;
-            height: 45px;
-            font-size: 1.3rem;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
+            font-size: 2rem;
         }
         
         .stat-label {
             font-size: 0.75rem;
         }
         
-        .mini-stat-card {
-            padding: 12px;
-        }
-        
-        .mini-stat-card i {
-            font-size: 1.75rem !important;
-        }
-        
-        .mini-stat-card h3 {
-            font-size: 1.25rem;
-        }
-        
-        .chart-container {
-            padding: 12px;
+        .chart-container,
+        .activity-card {
+            border-radius: 16px;
+            margin-bottom: 16px;
         }
         
         .activity-item {
-            padding: 12px;
+            padding: 16px;
         }
         
-        .activity-item h6 {
-            font-size: 0.9rem;
+        .activity-item:hover {
+            padding-left: 18px;
+        }
+        
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+        }
+    }
+    
+    @media (max-width: 575.98px) {
+        .dashboard-header {
+            padding: 20px 15px;
+            border-radius: 16px;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .dashboard-header::before,
+        .dashboard-header::after {
+            display: none;
+        }
+        
+        .stat-card {
+            padding: 16px 14px;
+        }
+        
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+        }
+        
+        .activity-item {
+            padding: 14px;
         }
         
         .badge {
             font-size: 0.7rem;
             padding: 4px 8px;
         }
-        
-        /* Ocultar algunos elementos en móvil muy pequeño */
-        .dashboard-header .text-end {
-            display: none;
-        }
     }
     
-    /* Ajustes para gráficos responsive */
+    /* Chart responsive */
     @media (max-width: 767.98px) {
         #tipoReportesChart,
-        #prioridadChart {
+        #categoriasChart {
             max-height: 250px !important;
         }
     }
     
     @media (max-width: 575.98px) {
         #tipoReportesChart,
-        #prioridadChart {
+        #categoriasChart {
             max-height: 200px !important;
-        }
-    }
-    
-    /* Mejoras de accesibilidad en móvil */
-    @media (max-width: 767.98px) {
-        .btn {
-            min-height: 40px;
-            padding: 8px 16px;
-        }
-        
-        .btn-sm {
-            min-height: 36px;
-        }
-        
-        /* Asegurar que los textos sean legibles */
-        small {
-            font-size: 0.8rem;
-        }
-        
-        /* Mejorar espaciado en listas */
-        .list-group-item {
-            padding: 12px 15px;
         }
     }
 </style>
@@ -564,21 +584,34 @@
 
 <div class="dashboard-header">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <div class="flex-grow-1">
+        <div class="flex-grow-1" style="z-index: 2;">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <span class="live-indicator">
+                    <span class="live-dot"></span>
+                    EN VIVO
+                </span>
+                <span class="badge bg-white bg-opacity-20 text-white px-3 py-2 rounded-pill">
+                    <i class="bi bi-geo-alt-fill me-1"></i> Ciudad Activa
+                </span>
+            </div>
             <h1>
-                <i class="bi bi-speedometer2 me-2"></i>
-                Bienvenido de vuelta
+                <i class="bi bi-shield-check me-2"></i>
+                Centro de Operaciones
             </h1>
-            <p>
+            <p class="mb-0">
                 <i class="bi bi-calendar3 me-2"></i>
-                {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM, YYYY') }} - {{ now()->format('H:i') }}
+                {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM, YYYY') }} • {{ now()->format('H:i') }}
             </p>
         </div>
-        <div class="text-end d-none d-md-block">
-            <div class="d-flex align-items-center gap-3">
-                <div class="text-white-50">
-                    <i class="bi bi-activity fs-4"></i>
+        <div class="text-end d-none d-lg-block" style="z-index: 2;">
+            <div class="d-flex flex-column align-items-end gap-2">
+                <div class="d-flex align-items-center gap-2 bg-white bg-opacity-10 rounded-pill px-4 py-2">
+                    <i class="bi bi-broadcast text-success fs-5"></i>
+                    <span class="fw-semibold">Sistema Activo</span>
                 </div>
+                <small class="text-white-50">
+                    <i class="bi bi-arrow-repeat me-1"></i> Auto-actualización: 30s
+                </small>
             </div>
         </div>
     </div>
@@ -586,77 +619,88 @@
 
 
 <div class="row g-4 mb-4">
-    <!-- Card TOTAL USUARIOS (Comunidad) -->
+    <!-- Card COMUNIDAD (Total Usuarios) -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card success">
+        <div class="stat-card success fade-in">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="stat-label text-success mb-1">COMUNIDAD</div>
-                    <div class="stat-value text-dark" style="font-size: 3.5rem;">{{ $totalUsuarios ?? 0 }}</div>
+                    <div class="stat-label mb-2">
+                        <i class="bi bi-heart-fill text-success me-1"></i> COMUNIDAD
+                    </div>
+                    <div class="stat-value">{{ $totalUsuarios ?? 0 }}</div>
+                    <div class="stat-change positive">
+                        <i class="bi bi-people-fill"></i>
+                        Usuarios activos
+                    </div>
                 </div>
                 <div class="stat-icon success">
                     <i class="bi bi-people-fill"></i>
                 </div>
             </div>
-            <div class="stat-change text-success fw-bold">
-                <i class="bi bi-arrow-up-circle-fill me-1"></i>
-                Usuarios registrados
-            </div>
         </div>
     </div>
     
-    <!-- Card ZONA CRÍTICA (Donde hay más casos) -->
+    <!-- Card ZONA CRÍTICA -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card info">
+        <div class="stat-card danger fade-in" style="animation-delay: 0.1s;">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="stat-label text-info mb-1">ZONA CRÍTICA</div>
-                    <div class="stat-value text-dark" style="font-size: 1.8rem;">
-                        {{ $zonaCritica ? Str::limit($zonaCritica->nombre, 12) : 'N/A' }}
+                    <div class="stat-label mb-2">
+                        <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> ZONA CRÍTICA
+                    </div>
+                    <div class="stat-value" style="font-size: 1.8rem;">
+                        {{ $zonaCritica ? Str::limit($zonaCritica->nombre, 15) : 'Sin alertas' }}
+                    </div>
+                    <div class="stat-change neutral">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        {{ $zonaCritica ? $zonaCritica->reportes_count . ' casos' : 'Todo bajo control' }}
                     </div>
                 </div>
-                <div class="stat-icon info">
-                    <i class="bi bi-map-fill"></i>
+                <div class="stat-icon danger">
+                    <i class="bi bi-pin-map-fill"></i>
                 </div>
-            </div>
-            <div class="stat-change text-muted">
-                {{ $zonaCritica ? $zonaCritica->reportes_count . ' casos activos' : 'Sin datos' }}
             </div>
         </div>
     </div>
     
-    <!-- Card NUEVOS HOY (Flujo diario) -->
+    <!-- Card ALERTAS HOY -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card primary">
+        <div class="stat-card primary fade-in" style="animation-delay: 0.2s;">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="stat-label text-primary mb-1">NUEVOS HOY</div>
-                    <div class="stat-value text-dark">{{ $reportesHoy }}</div>
+                    <div class="stat-label mb-2">
+                        <i class="bi bi-lightning-fill text-primary me-1"></i> ALERTAS HOY
+                    </div>
+                    <div class="stat-value">{{ $reportesHoy }}</div>
+                    <div class="stat-change neutral">
+                        <i class="bi bi-clock-history"></i>
+                        Últimas 24 horas
+                    </div>
                 </div>
                 <div class="stat-icon primary">
-                    <i class="bi bi-calendar-check-fill"></i>
+                    <i class="bi bi-bell-fill"></i>
                 </div>
-            </div>
-            <div class="stat-change text-muted">
-                Registrados las últimas 24h
             </div>
         </div>
     </div>
     
-    <!-- Card TOTAL ACTIVOS (Carga de trabajo) -->
+    <!-- Card CASOS ACTIVOS -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card warning">
+        <div class="stat-card warning fade-in" style="animation-delay: 0.3s;">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="stat-label text-warning mb-1">TOTAL ACTIVOS</div>
-                    <div class="stat-value text-dark">{{ number_format($reportesActivos ?? 0, 0, ',', '.') }}</div>
+                    <div class="stat-label mb-2">
+                        <i class="bi bi-hourglass-split text-warning me-1"></i> EN SEGUIMIENTO
+                    </div>
+                    <div class="stat-value">{{ number_format($reportesActivos ?? 0, 0, ',', '.') }}</div>
+                    <div class="stat-change neutral">
+                        <i class="bi bi-search"></i>
+                        Búsquedas activas
+                    </div>
                 </div>
                 <div class="stat-icon warning">
-                    <i class="bi bi-collection-fill"></i>
+                    <i class="bi bi-binoculars-fill"></i>
                 </div>
-            </div>
-            <div class="stat-change text-muted">
-                Casos pendientes de resolución
             </div>
         </div>
     </div>
