@@ -41,6 +41,12 @@ COMMENT ON SCHEMA public IS '';
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
+--
+-- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
 
 --
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
@@ -923,6 +929,7 @@ COPY public.model_has_permissions (permission_id, model_type, model_id) FROM std
 --
 
 COPY public.model_has_roles (role_id, model_type, model_id) FROM stdin;
+
 \.
 
 
@@ -1743,6 +1750,16 @@ ALTER TABLE ONLY public.role_has_permissions
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+
+--
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.roles (id, name, guard_name, created_at, updated_at) FROM stdin;
+1	usuario	web	2025-12-13 17:28:48	2025-12-13 17:28:48
+3	administrador	web	2025-12-13 17:40:16	2025-12-13 17:40:16
+4	editor	web	2025-12-13 18:49:42	2025-12-13 18:49:42
+\.
 
 
 --
