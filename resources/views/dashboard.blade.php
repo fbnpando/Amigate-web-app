@@ -571,7 +571,7 @@
             </h1>
             <p>
                 <i class="bi bi-calendar3 me-2"></i>
-                {{ now()->format('l, d F Y') }} - {{ now()->format('H:i') }}
+                {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM, YYYY') }} - {{ now()->format('H:i') }}
             </p>
         </div>
         <div class="text-end d-none d-md-block">
