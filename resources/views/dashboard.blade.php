@@ -586,21 +586,21 @@
 
 
 <div class="row g-4 mb-4">
-    <!-- Card URGENTE (Prioridad Máxima) -->
+    <!-- Card TOTAL USUARIOS (Comunidad) -->
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card danger {{ $reportesUrgente > 0 ? 'pulse-animation' : '' }}" style="{{ $reportesUrgente > 0 ? 'border: 2px solid #ef4444;' : '' }}">
+        <div class="stat-card success">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="stat-label text-danger mb-1">ALERTAS URGENTES</div>
-                    <div class="stat-value text-danger" style="font-size: 3.5rem;">{{ $reportesUrgente }}</div>
+                    <div class="stat-label text-success mb-1">COMUNIDAD</div>
+                    <div class="stat-value text-dark" style="font-size: 3.5rem;">{{ $totalUsuarios ?? 0 }}</div>
                 </div>
-                <div class="stat-icon danger">
-                    <i class="bi bi-megaphone-fill"></i>
+                <div class="stat-icon success">
+                    <i class="bi bi-people-fill"></i>
                 </div>
             </div>
-            <div class="stat-change text-danger fw-bold">
-                <i class="bi bi-exclamation-circle-fill me-1"></i>
-                ACCIÓN INMEDIATA REQUERIDA
+            <div class="stat-change text-success fw-bold">
+                <i class="bi bi-arrow-up-circle-fill me-1"></i>
+                Usuarios registrados
             </div>
         </div>
     </div>
@@ -687,208 +687,37 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h5 class="mb-1 fw-bold">
-                        <i class="bi bi-bar-chart-fill text-primary me-2"></i>
-                        Análisis de Prioridades
+                        <i class="bi bi-tags-fill text-primary me-2"></i>
+                        Categorías Más Frecuentes
                     </h5>
-                    <p class="text-muted small mb-0">Distribución por nivel de prioridad</p>
+                    <p class="text-muted small mb-0">Distribución por tipo de incidencia</p>
                 </div>
             </div>
-            <canvas id="prioridadChart" style="max-height: 300px;"></canvas>
+            <canvas id="categoriasChart" style="max-height: 300px;"></canvas>
         </div>
     </div>
 </div>
 
-
-<div class="row g-4">
-    
-    <div class="col-xl-8">
-        <div class="activity-card">
-            <div class="card-header bg-white border-0 py-4 px-4">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div>
-                        <h5 class="mb-1 fw-bold">
-                            <i class="bi bi-clock-history text-primary me-2"></i>
-                            Actividad Reciente
-                        </h5>
-                        <p class="text-muted small mb-0">Últimos reportes del sistema</p>
-                    </div>
-                    <a href="{{ route('reportes.index') }}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-arrow-right me-1"></i> <span class="d-none d-sm-inline">Ver todos</span>
-                    </a>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                @forelse($ultimosReportes ?? [] as $reporte)
-                <div class="activity-item">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 me-3">
-                            <div class="user-avatar bg-primary text-white">
-                                <i class="bi bi-file-earmark-text"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <h6 class="mb-1 fw-bold">{{ Str::limit($reporte->titulo, 50) }}</h6>
-                                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                                        <span class="badge bg-{{ $reporte->tipo_reporte == 'perdido' ? 'danger' : 'success' }}-subtle text-{{ $reporte->tipo_reporte == 'perdido' ? 'danger' : 'success' }} border border-{{ $reporte->tipo_reporte == 'perdido' ? 'danger' : 'success' }}">
-                                            <i class="bi bi-{{ $reporte->tipo_reporte == 'perdido' ? 'x-circle' : 'check-circle' }}-fill me-1"></i>
-                                            {{ ucfirst($reporte->tipo_reporte) }}
-                                        </span>
-                                        <span class="badge rounded-pill" style="background-color: {{ $reporte->categoria->color ?? '#6c757d' }}20; color: {{ $reporte->categoria->color ?? '#6c757d' }}; border: 1px solid {{ $reporte->categoria->color ?? '#6c757d' }}">
-                                            {{ $reporte->categoria->nombre ?? 'N/A' }}
-                                        </span>
-                                        @if($reporte->recompensa)
-                                            <span class="badge bg-warning-subtle text-warning border border-warning">
-                                                <i class="bi bi-cash-coin me-1"></i>Bs. {{ number_format($reporte->recompensa, 2) }}
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    @if($reporte->estado == 'activo')
-                                        <span class="badge bg-primary-subtle text-primary border border-primary">Activo</span>
-                                    @elseif($reporte->estado == 'resuelto')
-                                        <span class="badge bg-success-subtle text-success border border-success">
-                                            <i class="bi bi-check-circle-fill me-1"></i>Resuelto
-                                        </span>
-                                    @else
-                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary">{{ ucfirst($reporte->estado) }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="d-flex align-items-center">
-                                        @if($reporte->usuario->avatar_url ?? false)
-                                            <img src="{{ $reporte->usuario->avatar_url }}" class="rounded-circle me-2" width="24" height="24" alt="Avatar">
-                                        @else
-                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 10px;">
-                                                {{ substr($reporte->usuario->nombre ?? 'U', 0, 1) }}
-                                            </div>
-                                        @endif
-                                        <small class="text-muted">{{ $reporte->usuario->nombre ?? 'N/A' }}</small>
-                                    </div>
-                                    <small class="text-muted">
-                                        <i class="bi bi-calendar3 me-1"></i>{{ $reporte->created_at->format('d/m/Y') }}
-                                    </small>
-                                </div>
-                                <a href="{{ route('reportes.show', $reporte->id) }}" class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-eye me-1"></i> Ver
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @empty
-                <div class="activity-item text-center py-5">
-                    <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
-                    <h5 class="text-muted">No hay reportes registrados</h5>
-                    <p class="text-muted small">Los reportes aparecerán aquí cuando se creen</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
-    </div>
-    
-    
-    <div class="col-xl-4">
-        <div class="row g-4">
-            
-            <div class="col-12">
-                <div class="activity-card">
-                    <div class="card-header bg-white border-0 py-4 px-4">
-                        <h5 class="mb-1 fw-bold">
-                            <i class="bi bi-person-plus text-primary me-2"></i>
-                            Nuevos Usuarios
-                        </h5>
-                        <p class="text-muted small mb-0">Últimos registros</p>
-                    </div>
-                    <div class="card-body p-0">
-                        @forelse($nuevosUsuarios ?? [] as $usuario)
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 me-3">
-                                    @if($usuario->avatar_url)
-                                        <img src="{{ $usuario->avatar_url }}" class="rounded-circle" width="45" height="45" alt="Avatar">
-                                    @else
-                                        <div class="user-avatar bg-primary text-white">
-                                            {{ substr($usuario->nombre, 0, 1) }}
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1 fw-bold">{{ $usuario->nombre }}</h6>
-                                    <small class="text-muted d-block">{{ Str::limit($usuario->email, 25) }}</small>
-                                    <small class="text-muted">
-                                        <i class="bi bi-clock me-1"></i>{{ $usuario->created_at->diffForHumans() }}
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="activity-item text-center py-4">
-                            <i class="bi bi-inbox fs-3 text-muted mb-2 d-block"></i>
-                            <p class="text-muted small mb-0">No hay usuarios nuevos</p>
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-            
-            
-            <div class="col-12">
-                <div class="activity-card">
-                    <div class="card-header bg-white border-0 py-4 px-4">
-                        <h5 class="mb-1 fw-bold">
-                            <i class="bi bi-tags text-primary me-2"></i>
-                            Categorías Populares
-                        </h5>
-                        <p class="text-muted small mb-0">Más utilizadas</p>
-                    </div>
-                    <div class="card-body">
-                        @forelse($categoriasPopulares ?? [] as $categoria)
-                        <div class="category-badge mb-3" style="background-color: {{ $categoria->color }}15; color: {{ $categoria->color }}; border: 2px solid {{ $categoria->color }}30;">
-                            <i class="bi bi-tag-fill"></i>
-                            <span class="flex-grow-1">{{ $categoria->nombre }}</span>
-                            <span class="badge rounded-pill" style="background-color: {{ $categoria->color }}; color: white;">
-                                {{ $categoria->reportes_count }}
-                            </span>
-                        </div>
-                        @empty
-                        <div class="text-center py-4">
-                            <i class="bi bi-inbox fs-3 text-muted mb-2 d-block"></i>
-                            <p class="text-muted small mb-0">No hay datos disponibles</p>
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+{{-- ... (Rest of view) ... --}}
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    // Gráfico de Tipo de Reportes - Doughnut mejorado
+    // Gráfico de Tipo de Reportes - Solo Perdidos vs Resueltos
     const tipoCtx = document.getElementById('tipoReportesChart');
     if (tipoCtx) {
         new Chart(tipoCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Perdidos', 'Encontrados', 'Resueltos'],
+                labels: ['Perdidos (Activos)', 'Resueltos'],
                 datasets: [{
-                    data: [{{ $reportesPerdidos ?? 0 }}, {{ $reportesEncontrados ?? 0 }}, {{ $reportesResueltos ?? 0 }}],
+                    data: [{{ $reportesPerdidos ?? 0 }}, {{ $reportesResueltos ?? 0 }}],
                     backgroundColor: [
                         'rgba(239, 68, 68, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
                         'rgba(37, 99, 235, 0.8)'
                     ],
                     borderColor: [
                         '#ef4444',
-                        '#10b981',
                         '#2563eb'
                     ],
                     borderWidth: 3,
@@ -903,26 +732,15 @@
                         position: 'bottom',
                         labels: {
                             padding: 20,
-                            font: {
-                                size: 13,
-                                weight: '600'
-                            },
+                            font: { size: 13, weight: '600' },
                             usePointStyle: true,
                             pointStyle: 'circle'
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                        padding: 15,
-                        titleFont: {
-                            size: 15,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 14
-                        },
-                        cornerRadius: 10,
-                        displayColors: true
+                         backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                         padding: 15,
+                         cornerRadius: 10
                     }
                 },
                 cutout: '65%'
@@ -930,95 +748,55 @@
         });
     }
 
-    // Gráfico de Prioridad - Bar mejorado
-    const prioridadCtx = document.getElementById('prioridadChart');
-    if (prioridadCtx) {
-        new Chart(prioridadCtx, {
+    // Gráfico de Categorías - Bar Chart con Data Real
+    const catCtx = document.getElementById('categoriasChart');
+    if (catCtx) {
+        // Preparamos los datos desde PHP
+        const catLabels = {!! json_encode($categoriasPopulares->pluck('nombre')) !!};
+        const catData = {!! json_encode($categoriasPopulares->pluck('reportes_count')) !!};
+        const catColors = {!! json_encode($categoriasPopulares->pluck('color')) !!};
+
+        new Chart(catCtx, {
             type: 'bar',
             data: {
-                labels: ['Baja', 'Normal', 'Alta', 'Urgente'],
+                labels: catLabels,
                 datasets: [{
                     label: 'Reportes',
-                    data: [
-                        {{ $reportesBaja ?? 0 }},
-                        {{ $reportesNormal ?? 0 }},
-                        {{ $reportesAlta ?? 0 }},
-                        {{ $reportesUrgente ?? 0 }}
-                    ],
-                    backgroundColor: [
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(6, 182, 212, 0.8)',
-                        'rgba(245, 158, 11, 0.8)',
-                        'rgba(239, 68, 68, 0.8)'
-                    ],
-                    borderColor: [
-                        '#10b981',
-                        '#06b6d4',
-                        '#f59e0b',
-                        '#ef4444'
-                    ],
+                    data: catData,
+                    backgroundColor: catColors.map(c => c + 'CC'), // Add transparency
+                    borderColor: catColors,
                     borderWidth: 2,
-                    borderRadius: 12,
-                    borderSkipped: false
+                    borderRadius: 8,
+                    barPercentage: 0.6
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
+                indexAxis: 'y', // Horizontal bars look better for categories
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                        padding: 15,
-                        titleFont: {
-                            size: 15,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 14
-                        },
-                        cornerRadius: 10,
-                        displayColors: true
+                        padding: 12,
+                        cornerRadius: 8
                     }
                 },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            font: {
-                                size: 12,
-                                weight: '600'
-                            },
-                            color: '#64748b'
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)',
-                            drawBorder: false
-                        }
-                    },
                     x: {
-                        ticks: {
-                            font: {
-                                size: 12,
-                                weight: '600'
-                            },
-                            color: '#64748b'
-                        },
-                        grid: {
-                            display: false
-                        }
+                        grid: { display: false },
+                        ticks: { font: { weight: '600' } }
+                    },
+                    y: {
+                        grid: { color: '#f1f5f9' },
+                        ticks: { font: { weight: '600' }, color: '#475569' }
                     }
                 }
             }
         });
     }
 
-    // Auto-refresh for Operations Center Mode (30s)
-    setTimeout(function() {
-        window.location.reload();
-    }, 30000);
+    // Auto-refresh (30s)
+    setTimeout(() => window.location.reload(), 30000);
 </script>
 @endpush
