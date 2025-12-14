@@ -45,8 +45,8 @@ class RestoreFromBackupSeeder extends Seeder
 
     private function restoreTableFromCopy(string $content, string $tableName, array $columns)
     {
-        // Regex to find the COPY block
-        $pattern = "/COPY public\.{$tableName} \((.*?)\) FROM stdin;\n(.*?)\n\\\\\\\\./s";
+        // Regex to find the COPY block - flexible for line endings
+        $pattern = "/COPY public\.{$tableName} \((.*?)\) FROM stdin;[\r\n]+(.*?)[\r\n]+\\\./s";
         
         if (preg_match($pattern, $content, $matches)) {
             $dataBlock = $matches[2];
