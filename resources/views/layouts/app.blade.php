@@ -682,10 +682,9 @@
             }
         }
         
-        /* Optimización: Solo animar elementos visibles */
+        /* Elementos visibles por defecto */
         .content-wrapper > * {
-            opacity: 0;
-            animation: fadeIn 0.3s ease forwards;
+            opacity: 1;
         }
         
         /* GPU Acceleration para mejor rendimiento */
