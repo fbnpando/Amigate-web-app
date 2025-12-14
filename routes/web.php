@@ -115,7 +115,9 @@ Route::get('/', function () {
 
     
     Route::middleware(['role:administrador'])->group(function () {
-    Route::get('/configuracion', [ConfiguracionWebController::class, 'index'])->name('configuracion.index');
+        Route::get('/configuracion', [ConfiguracionWebController::class, 'index'])->name('configuracion.index');
+        Route::get('/configuracion/editar', [ConfiguracionWebController::class, 'edit'])->name('configuracion.edit');
+        Route::put('/configuracion', [ConfiguracionWebController::class, 'update'])->name('configuracion.update');
     });
 
     

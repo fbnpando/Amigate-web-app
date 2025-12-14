@@ -97,6 +97,11 @@
                 </h5>
                 <p class="text-muted small mb-0 mt-1">Administra las configuraciones y parámetros del sistema</p>
             </div>
+            <div class="col-auto">
+                <a href="{{ route('configuracion.edit') }}" class="btn btn-primary rounded-pill px-4">
+                    <i class="bi bi-pencil-square me-2"></i>Editar Ajustes
+                </a>
+            </div>
         </div>
     </div>
     <div class="card-body p-4">
