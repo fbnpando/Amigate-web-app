@@ -551,22 +551,43 @@
 <div class="dashboard-header" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); padding: 25px; border-radius: 16px; color: white; margin-bottom: 25px;">
     <div class="d-flex justify-content-between align-items-center">
         <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span style="background: rgba(16, 185, 129, 0.9); padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                    <span style="width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: pulse 1.5s infinite;"></span>
+                    EN VIVO
+                </span>
+            </div>
             <h1 class="mb-1" style="font-size: 1.75rem; font-weight: 700;">
                 <i class="bi bi-speedometer2 me-2"></i>
                 Dashboard
             </h1>
             <p class="mb-0" style="font-size: 0.95rem; opacity: 0.9;">
                 <i class="bi bi-calendar3 me-1"></i>
-                {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM, YYYY') }} • {{ now()->format('H:i') }}
+                {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM, YYYY') }} • <span id="current-time">{{ now()->format('H:i:s') }}</span>
             </p>
         </div>
-        <div class="d-none d-md-block">
-            <span class="badge bg-white bg-opacity-20 text-white px-3 py-2 rounded-pill">
-                <i class="bi bi-broadcast me-1 text-success"></i> Sistema Activo
+        <div class="d-none d-md-flex align-items-center gap-2">
+            <span style="background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                <i class="bi bi-arrow-repeat" id="refresh-icon"></i>
+                <span id="countdown">30s</span>
             </span>
         </div>
     </div>
 </div>
+
+<style>
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.2); }
+    }
+    #refresh-icon.spinning {
+        animation: spin 1s linear;
+    }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
 
 
 <div class="row g-4 mb-4">
@@ -967,8 +988,40 @@
             }
         });
     }
-
-    // Auto-refresh (30s)
-    setTimeout(() => window.location.reload(), 30000);
+    // ========================================
+    // AUTO-REFRESH SYSTEM
+    // ========================================
+    let countdown = 30;
+    const countdownEl = document.getElementById('countdown');
+    const refreshIcon = document.getElementById('refresh-icon');
+    const currentTimeEl = document.getElementById('current-time');
+    
+    // Actualizar hora cada segundo
+    setInterval(() => {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        if (currentTimeEl) {
+            currentTimeEl.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+    }, 1000);
+    
+    // Countdown y refresh
+    setInterval(() => {
+        countdown--;
+        if (countdownEl) {
+            countdownEl.textContent = countdown + 's';
+        }
+        
+        if (countdown <= 0) {
+            countdown = 30;
+            if (refreshIcon) {
+                refreshIcon.classList.add('spinning');
+            }
+            // Recargar página para obtener datos actualizados
+            window.location.reload();
+        }
+    }, 1000);
 </script>
 @endpush
