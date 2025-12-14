@@ -698,7 +698,182 @@
     </div>
 </div>
 
-{{-- ... (Rest of view) ... --}}
+<div class="row g-4">
+    <!-- Actividad Reciente (Columna Principal) -->
+    <div class="col-xl-8">
+        <div class="activity-card">
+            <div class="card-header bg-white border-0 py-4 px-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 class="mb-1 fw-bold">
+                            <i class="bi bi-clock-history text-primary me-2"></i>
+                            Actividad Reciente
+                        </h5>
+                        <p class="text-muted small mb-0">Últimos reportes del sistema</p>
+                    </div>
+                    <a href="{{ route('reportes.index') }}" class="btn btn-primary btn-sm rounded-pill px-3">
+                        Ver todos <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @forelse($ultimosReportes ?? [] as $reporte)
+                <div class="activity-item">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="user-avatar bg-primary-subtle text-primary rounded-4">
+                                <i class="bi bi-file-earmark-text fs-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-1 fw-bold text-dark">{{ Str::limit($reporte->titulo, 50) }}</h6>
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <span class="badge bg-{{ $reporte->tipo_reporte == 'perdido' ? 'danger' : 'success' }}-subtle text-{{ $reporte->tipo_reporte == 'perdido' ? 'danger' : 'success' }} border border-{{ $reporte->tipo_reporte == 'perdido' ? 'danger' : 'success' }} rounded-pill">
+                                            <i class="bi bi-{{ $reporte->tipo_reporte == 'perdido' ? 'x-circle' : 'check-circle' }}-fill me-1"></i>
+                                            {{ ucfirst($reporte->tipo_reporte) }}
+                                        </span>
+                                        <span class="badge rounded-pill" style="background-color: {{ $reporte->categoria->color ?? '#6c757d' }}20; color: {{ $reporte->categoria->color ?? '#6c757d' }}; border: 1px solid {{ $reporte->categoria->color ?? '#6c757d' }}">
+                                            {{ $reporte->categoria->nombre ?? 'N/A' }}
+                                        </span>
+                                        @if($reporte->recompensa)
+                                            <span class="badge bg-warning-subtle text-warning border border-warning rounded-pill">
+                                                <i class="bi bi-cash-coin me-1"></i>Bs. {{ number_format($reporte->recompensa, 2) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    @if($reporte->estado == 'activo')
+                                        <span class="badge bg-primary-subtle text-primary border border-primary rounded-pill px-3">Activo</span>
+                                    @elseif($reporte->estado == 'resuelto')
+                                        <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Resuelto
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary rounded-pill px-3">{{ ucfirst($reporte->estado) }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="d-flex align-items-center">
+                                        @if($reporte->usuario->avatar_url ?? false)
+                                            <img src="{{ $reporte->usuario->avatar_url }}" class="rounded-circle me-2" width="24" height="24" alt="Avatar">
+                                        @else
+                                            <div class="rounded-circle bg-gray-200 text-secondary d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 24px; height: 24px; font-size: 10px; background-color: #f1f5f9;">
+                                                {{ substr($reporte->usuario->nombre ?? 'U', 0, 1) }}
+                                            </div>
+                                        @endif
+                                        <small class="text-muted fw-semibold">{{ $reporte->usuario->nombre ?? 'N/A' }}</small>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i>{{ $reporte->created_at->format('d/m/Y') }}
+                                    </small>
+                                </div>
+                                <a href="{{ route('reportes.show', $reporte->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                    Ver detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="activity-item text-center py-5">
+                    <div class="bg-light rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                    </div>
+                    <h5 class="text-muted fw-semibold">No hay reportes recientes</h5>
+                    <p class="text-muted small">Los reportes nuevos aparecerán aquí</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+    
+    <!-- Columna Lateral (Usuarios y Categorías) -->
+    <div class="col-xl-4">
+        <div class="row g-4">
+            <!-- Nuevos Usuarios -->
+            <div class="col-12">
+                <div class="activity-card">
+                    <div class="card-header bg-white border-0 py-4 px-4">
+                        <h5 class="mb-1 fw-bold">
+                            <i class="bi bi-person-plus text-primary me-2"></i>
+                            Nuevos Usuarios
+                        </h5>
+                        <p class="text-muted small mb-0">Últimos registros en la comunidad</p>
+                    </div>
+                    <div class="card-body p-0">
+                        @forelse($nuevosUsuarios ?? [] as $usuario)
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 me-3">
+                                    @if($usuario->avatar_url)
+                                        <img src="{{ $usuario->avatar_url }}" class="rounded-circle shadow-sm" width="45" height="45" alt="Avatar">
+                                    @else
+                                        <div class="user-avatar bg-success-subtle text-success rounded-4 fw-bold fs-5">
+                                            {{ substr($usuario->nombre, 0, 1) }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold text-dark">{{ $usuario->nombre }}</h6>
+                                    <small class="text-muted d-block mb-1">{{ Str::limit($usuario->email, 22) }}</small>
+                                    <span class="badge bg-light text-secondary border rounded-pill">
+                                        <i class="bi bi-clock me-1"></i>{{ $usuario->created_at->diffForHumans(null, true, true) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="activity-item text-center py-4">
+                            <p class="text-muted small mb-0">No hay usuarios nuevos</p>
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categorías Populares (LISTA) -->
+            <div class="col-12">
+                <div class="activity-card">
+                    <div class="card-header bg-white border-0 py-4 px-4">
+                        <h5 class="mb-1 fw-bold">
+                            <i class="bi bi-tags text-primary me-2"></i>
+                            Top Categorías
+                        </h5>
+                        <p class="text-muted small mb-0">Mayor actividad histórica</p>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        @forelse($categoriasPopulares ?? [] as $categoria)
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold" style="color: {{ $categoria->color }};">
+                                        <i class="bi bi-circle-fill me-2 small"></i>{{ $categoria->nombre }}
+                                    </span>
+                                    <span class="fw-bold text-dark">{{ $categoria->reportes_count }}</span>
+                                </div>
+                                <div class="progress" style="height: 6px; border-radius: 10px; background-color: #f1f5f9;">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: {{ $totalReportes > 0 ? ($categoria->reportes_count / $totalReportes) * 100 : 0 }}%; background-color: {{ $categoria->color }}; border-radius: 10px;" 
+                                         aria-valuenow="{{ $categoria->reportes_count }}" aria-valuemin="0" aria-valuemax="{{ $totalReportes }}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center py-4">
+                            <p class="text-muted small mb-0">No hay datos disponibles</p>
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
