@@ -878,16 +878,18 @@
         new Chart(tipoCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Perdidos', 'Encontrados'],
+                labels: ['Perdidos', 'Encontrados', 'Resueltos'],
                 datasets: [{
-                    data: [{{ $reportesPerdidos ?? 0 }}, {{ $reportesEncontrados ?? 0 }}],
+                    data: [{{ $reportesPerdidos ?? 0 }}, {{ $reportesEncontrados ?? 0 }}, {{ $reportesResueltos ?? 0 }}],
                     backgroundColor: [
                         'rgba(239, 68, 68, 0.8)',
-                        'rgba(16, 185, 129, 0.8)'
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(37, 99, 235, 0.8)'
                     ],
                     borderColor: [
                         '#ef4444',
-                        '#10b981'
+                        '#10b981',
+                        '#2563eb'
                     ],
                     borderWidth: 3,
                     hoverOffset: 15
